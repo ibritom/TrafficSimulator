@@ -1,5 +1,4 @@
 # Nodo para lista doblemente enlazada circular
-#Hola
 class DiccionarioNodo:
     def __init__(self, clave, valor):
         self.clave = clave
