@@ -1,11 +1,24 @@
+from abc import abstractmethod
+
 import pygame
 class figura:
-    def __init__(self, x, y, ancho, alto, color):
-        self.x = x
-        self.y = y
+    @abstractmethod
+    def dibujar(self):
+        raise NotImplementedError
+    @abstractmethod
+    def mover(self):
+        raise NotImplementedError
+class rectangulo(figura):
+    def __init__(self, pantalla, x1, y1, x2, y2, ancho, alto, etiqueta=""):
+        self.rectangulo = 0
+        self.pantalla = pantalla
+        self.x1 = x1
+        self.y1 = y1
+        self.x2 = x2
+        self.y2 = y2
         self.ancho = ancho
         self.alto = alto
-        self.color = color
+        self.etiqueta = etiqueta
+    def dibujar(self):
+        return None#implementar
 
-    def dibujar(self, pantalla):
-        pygame.draw.rect(pantalla, self.color, (self.x, self.y, self.ancho, self.alto))
