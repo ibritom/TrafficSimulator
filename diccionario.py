@@ -12,7 +12,7 @@ class DiccionarioPersonalizado:
     def __init__(self):
         self.cabeza = None
         self.tamano = 0
-    # Añade clave-valor al final, solo si no existe.
+
     def agregar(self, clave, valor):
         if self.contiene(clave):
             return
@@ -31,7 +31,7 @@ class DiccionarioPersonalizado:
             self.cabeza.anterior = nuevo
 
         self.tamano += 1
-    # Busca si una clave está presente.
+
     def contiene(self, clave):
         if self.cabeza is None:
             return False
@@ -45,7 +45,7 @@ class DiccionarioPersonalizado:
                 break
 
         return False
-    # Devuelve el valor asociado a una clave(lanzando error si no existe).
+
     def obtener(self, clave):
         if self.cabeza is None:
             raise Exception("Clave no encontrada")
@@ -59,7 +59,7 @@ class DiccionarioPersonalizado:
                 break
 
         raise Exception("Clave no encontrada")
-    # Elimina un nodo con clave específica.
+
     def eliminar(self, clave):
         if self.cabeza is None:
             return
@@ -79,7 +79,7 @@ class DiccionarioPersonalizado:
             actual = actual.siguiente
             if actual == self.cabeza:
                 break
-    # Devuelve todas las entradas como array de tuplas.
+
     def elementos(self):
         elementos = []
         actual = self.cabeza
@@ -92,3 +92,47 @@ class DiccionarioPersonalizado:
                     break
 
         return elementos
+
+    # NUEVA: Actualiza valor de una clave existente
+    def actualizar(self, clave, nuevo_valor):
+        if self.cabeza is None:
+            return False
+
+        actual = self.cabeza
+        while True:
+            if actual.clave == clave:
+                actual.valor = nuevo_valor
+                return True
+            actual = actual.siguiente
+            if actual == self.cabeza:
+                break
+        return False
+
+    # NUEVA: Imprime todos los pares clave-valor (debugging)
+    def imprimir(self):
+        actual = self.cabeza
+        if actual is None:
+            print("Diccionario vacío.")
+            return
+
+        while True:
+            print(f"{actual.clave}: {actual.valor}")
+            actual = actual.siguiente
+            if actual == self.cabeza:
+                break
+
+    # NUEVA: Retorna la clave con el menor valor (útil para Dijkstra)
+    def obtener_menor(self):
+        if self.cabeza is None:
+            return None
+
+        actual = self.cabeza
+        menor = actual
+        actual = actual.siguiente
+
+        while actual != self.cabeza:
+            if actual.valor < menor.valor:
+                menor = actual
+            actual = actual.siguiente
+
+        return menor.clave  # se puede usar solo 'menor' para devolver el nodo completo
