@@ -1,3 +1,4 @@
+from conexion import Conexion
 class ListaAdyacencia:
     def __init__(self):
         self.cabeza = None

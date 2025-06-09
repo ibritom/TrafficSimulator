@@ -5,10 +5,10 @@ class Simulacion:
     def __init__(self):
         self.nodos = None  # Lista enlazada de nodos (cabeza)
 
-    def agregar_nodo(self, nombre):
+    def agregar_nodo(self, nombre, x=0, y=0):
         if self.buscar_nodo(nombre):
             return False  # Ya existe
-        nuevo = Nodo(nombre)
+        nuevo = Nodo(nombre, x, y)
         nuevo.siguiente = self.nodos
         self.nodos = nuevo
         return True
@@ -93,4 +93,23 @@ class Simulacion:
             return []
 
         return ruta
+
+    def obtener_ruta_con_info(self, destino_nombre):
+        destino = self.buscar_nodo(destino_nombre)
+        if not destino:
+            print("Nodo destino no encontrado.")
+            return []
+
+        ruta = []
+        actual = destino
+        while actual:
+            ruta.insert(0, (actual.nombre, (actual.x, actual.y)))
+            actual = actual.predecesor
+
+        if len(ruta) == 1 and ruta[0][0] != destino_nombre:
+            print("No hay ruta encontrada.")
+            return []
+
+        return ruta
+
 
