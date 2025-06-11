@@ -6,7 +6,7 @@ def main():
     pygame.display.set_caption("Dibujo de Figuras")
 
     # Crear una figura
-    rectangulo = figura(100, 100, 200, 150, (255, 0, 0))
+    rectangulo = Rectangulo(pantalla=pantalla, x1=100, y1=100, x2=200, y2=200, tag="rectangulo")
 
     # Bucle principal
     running = True
@@ -16,7 +16,7 @@ def main():
                 running = False
 
         pantalla.fill((255, 255, 255))  # Limpiar pantalla con color blanco
-        rectangulo.dibujar(pantalla)      # Dibujar la figura
+        rectangulo.dibujar()      # Dibujar la figura
         pygame.display.flip()              # Actualizar pantalla
 
     pygame.quit()
