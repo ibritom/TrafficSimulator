@@ -19,6 +19,15 @@ class Figura:
     def posicionar(self, x, y):
         raise NotImplementedError
 
+    def crear_rectangulo(pantalla, x1, y1, x2, y2, color, tag=""):
+        return Rectangulo(pantalla, x1, y1, x2, y2, color, tag)
+
+    def crear_circulo(pantalla, x1, y1, x2, y2, color, tag=""):
+        return Circulo(pantalla, x1, y1, x2, y2, color, tag)
+
+    def crear_linea(pantalla, punto_inicio, punto_final, ancho, color, tag=""):
+        return Linea(pantalla, punto_inicio, punto_final, ancho, color, tag)
+
 class Rectangulo(Figura):
     def __init__(self, pantalla, x1, y1, x2, y2, color, tag=""):
         super().__init__(color)
@@ -89,8 +98,14 @@ class Linea(Figura):
         super().__init__(color)
         self._linea = None
         self._pantalla = pantalla
-        self._punto_inicio = punto_inicio
-        self._punto_final = punto_final
+        if isinstance(punto_inicio, tuple):
+            self._punto_inicio = punto_inicio
+        else:
+            raise TypeError("punto_inicio must be a tuple")
+        if isinstance(punto_final, tuple):
+            self._punto_final = punto_final
+        else:
+            raise TypeError("punto_final must be a tuple")
         self._ancho = ancho
         self._tag = tag
 
