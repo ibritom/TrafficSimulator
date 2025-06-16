@@ -32,9 +32,9 @@ def mostrar_banner():
 ║                    TRAFFIC SIMULATOR                         ║
 ║                                                              ║
 ║          Instituto Tecnológico de Costa Rica                 ║
-║        Algoritmos y Estructuras de Datos I (CE 1103)        ║
+║        Algoritmos y Estructuras de Datos I (CE 1103)         ║
 ║                                                              ║
-║  Simulador de tráfico vehicular con algoritmos de grafos    ║
+║  Simulador de tráfico vehicular con algoritmos de grafos     ║
 ╚══════════════════════════════════════════════════════════════╝
     """
     print(banner)
