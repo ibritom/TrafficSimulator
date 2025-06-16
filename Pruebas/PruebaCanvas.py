@@ -26,6 +26,8 @@ botonPlay = botonImg(650,590,170,170,playImg)
 botonPause = botonImg(820,590,170,170,pauseImg)
 botonAcelerar = boton((255,255,255),(30,30,30),(0,0,0),1000,590,50,170,"Acelerar sim")
 botonDecelerar = boton((255,255,255),(30,30,30),(0,0,0),1000,650,50,170,"Decelerar sim")
+# ciudades predetermindadas
+
 
 while True:
     pantalla.fill((255, 255, 255))
@@ -40,7 +42,7 @@ while True:
     if botonSalir.renderizar(pantalla):
         pygame.quit()
     if botonCiudad.renderizar(pantalla):
-        verticeUI.crearVertice(pantalla,"rojo","Cartago",60,60,120,120)
+        #verticeUI.crearVertice(pantalla,"rojo","Cartago",60,60,120,120)
         print("Añadir ciudad")
     if botonTrafico.renderizar(pantalla):
         print("Tráfico")
