@@ -18,7 +18,7 @@ class InfoEstadoView(BaseView):
     def renderizar(self, pantalla):
         """Renderiza la información de estado"""
         estado = self._controller.obtener_estado_actual()
-        info_y = ALTO - 100
+        info_y = ALTO - 260
 
         # Número de nodos
         nodos_texto = self._fuente_pequena.render(

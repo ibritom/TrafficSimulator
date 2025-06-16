@@ -1,6 +1,6 @@
 # Constantes de la aplicación
-ANCHO = 1200
-ALTO = 800
+ANCHO = 1366
+ALTO = 768
 FPS = 60
 
 # Colores
