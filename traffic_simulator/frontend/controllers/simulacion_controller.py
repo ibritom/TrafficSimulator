@@ -151,6 +151,12 @@ class SimulacionController(Observer):
         self._vehiculos.clear()
         self._simulacion.reiniciar_simulacion()
         self._nodo_seleccionado = None
+    def agregarCiudad(self):
+        #x = random.randint(100,1500)
+        #y = random.randint(100,1500)
+        nombre = f"Ciudad_{len(self._simulacion.obtener_todos_los_nodos()) + 1}"
+        self._simulacion.crear_nodo(nombre, x, y)
+
 
 
 print("=== REFACTORIZACIÓN COMPLETA ===")

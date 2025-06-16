@@ -2,6 +2,9 @@
 import pygame
 from traffic_simulator.frontend.views.base_view import BaseView
 from traffic_simulator.backend.utils.constantes import *
+from traffic_simulator.frontend.views.boton import *
+from traffic_simulator.backend.utils.constantes import *
+from traffic_simulator.frontend.controllers.simulacion_controller import *
 
 
 class PanelControlView(BaseView):
@@ -11,6 +14,7 @@ class PanelControlView(BaseView):
         super().__init__(controller)
         self._fuente = pygame.font.Font(None, 24)
         self._fuente_pequena = pygame.font.Font(None, 18)
+        self.boton_Nodo = boton((255,255,255),(30,30,30),(0,0,0),10,590,170,170,"Ciudad")
 
     def actualizar_desde_modelo(self, evento, datos):
         """Actualiza la vista basada en eventos del modelo"""
@@ -85,3 +89,9 @@ class PanelControlView(BaseView):
                             True, NEGRO)
                         pantalla.blit(ruta_texto, (10, panel_y))
                         panel_y += 18
+        # Botones
+        if self.boton_Nodo.renderizar(pantalla):
+            mouse_x,mouse_y = pygame.mouse.get_pos()
+            self._controller.cambiar_modo("AGREGAR_NODO")
+            print("Agregar ciudad")
+
