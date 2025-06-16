@@ -1,6 +1,7 @@
 import pygame
 from pygame.locals import *
 from boton import *
+from vertice import *
 
 ## basico de pygame
 pygame.init()
@@ -39,6 +40,7 @@ while True:
     if botonSalir.renderizar(pantalla):
         pygame.quit()
     if botonCiudad.renderizar(pantalla):
+        verticeUI.crearVertice(pantalla,"rojo","Cartago",60,60,120,120)
         print("Añadir ciudad")
     if botonTrafico.renderizar(pantalla):
         print("Tráfico")
