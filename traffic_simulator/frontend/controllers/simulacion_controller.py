@@ -1,4 +1,5 @@
 # frontend/controllers/simulacion_controller.py (Patrón MVC)
+import pygame
 from traffic_simulator.backend.interfaces.observer_interface import Observer
 from traffic_simulator.backend.services.simulacion_facade import SimulacionFacade
 from traffic_simulator.backend.factories.vehiculo_factory import VehiculoFactory
@@ -6,6 +7,7 @@ import random
 import threading
 import time
 from traffic_simulator.backend.models.nodo import Nodo
+from traffic_simulator.backend.utils.constantes import *
 from traffic_simulator.frontend.views.nombre_ciudad_popup import NombreCiudadPopup
 
 class SimulacionController(Observer):
@@ -23,7 +25,7 @@ class SimulacionController(Observer):
         self._velocidad_simulacion = 1.0
         self._view = None  # Se establecerá desde la vista
         self.nodo_origen_dijkstra=None
-
+        self._vehiculo_seleccionado = None
 
     def establecer_vista(self, view):
         """Establece la referencia a la vista"""
@@ -52,6 +54,8 @@ class SimulacionController(Observer):
             return self._manejar_conectar_nodos(x, y)
         elif self._modo_actual == "DIJKSTRA":
             return self._manejar_dijkstra(x, y)
+        elif self._modo_actual == "INFO":
+            return self._manejar_info_vehiculo(x, y)
 
     def agregar_carro(self, destino_id: str) -> None:
         """Agrega un vehículo con ruta a un destino específico"""
@@ -172,6 +176,59 @@ class SimulacionController(Observer):
         self._vehiculos.clear()
         self._simulacion.reiniciar_simulacion()
         self._nodo_seleccionado = None
+
+    def obtener_vehiculo_en_posicion(self, x, y, radio=10):
+        """Retorna el primer vehículo cuya posición esté cerca del punto (x, y)"""
+        for vehiculo in self._vehiculos:
+            vx, vy = vehiculo.posicion
+            distancia = ((vx - x) ** 2 + (vy - y) ** 2) ** 0.5
+            if distancia <= radio:
+                return vehiculo
+        return None
+
+    def _mostrar_info_vehiculo(self, pantalla, vehiculo):
+        fuente = pygame.font.Font(None, 24)
+        fondo = pygame.Rect(20, ALTO - 160, 360, 140)
+        pygame.draw.rect(pantalla, (240, 240, 240), fondo)
+        pygame.draw.rect(pantalla, NEGRO, fondo, 2)
+
+        ruta_str = " → ".join(n.nombre for n in vehiculo.ruta)
+
+        lineas = [
+            f"Tipo: {vehiculo.tipo}",
+            f"Origen: {vehiculo.ruta[0].nombre if vehiculo.ruta else 'N/A'}",
+            f"Destino: {vehiculo.ruta[-1].nombre if vehiculo.ruta else 'N/A'}",
+            f"Ruta: {ruta_str}"
+        ]
+
+        for i, linea in enumerate(lineas):
+            texto = fuente.render(linea, True, NEGRO)
+            pantalla.blit(texto, (30, ALTO - 140 + i * 30))
+
+    def _manejar_info_vehiculo(self, x, y):
+        """Selecciona un vehículo si se hace clic sobre él"""
+        vehiculo = self.obtener_vehiculo_en_posicion(x, y)
+        if vehiculo:
+            print(f"[INFO] Vehículo seleccionado: {vehiculo.tipo}")
+            self._vehiculo_seleccionado = vehiculo
+            return True
+        else:
+            self._vehiculo_seleccionado = None  # Deselecciona si no se clickea nada
+            return False
+
+    def obtener_vehiculo_seleccionado(self):
+        """Devuelve el vehículo actualmente seleccionado"""
+        return self._vehiculo_seleccionado
+
+    # frontend/controllers/simulacion_controller.py
+    def obtener_ruta_vehiculo_seleccionado(self):
+        if self._vehiculo_seleccionado:
+            return self._vehiculo_seleccionado.ruta
+        return []
+
+    def obtener_nodo_origen_dijkstra(self):
+        return self._nodo_origen_dijkstra
+
 
 print("=== REFACTORIZACIÓN COMPLETA ===")
 print("✓ Interfaces implementadas (Principio DIP)")

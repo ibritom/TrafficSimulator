@@ -29,10 +29,9 @@ class MainView(BaseView):
         # Fondo blanco
         pantalla.fill(BLANCO)
         # Renderizar popup si está activo
-        print(f"[Renderizar] popup = {self._popup}, activo = {getattr(self._popup, 'activo', 'Sin atributo')}")
-
-
-
+        vehiculo = self._controller.obtener_vehiculo_seleccionado()
+        if vehiculo:
+            self._mostrar_info_vehiculo(pantalla, vehiculo)
 
         # Orden de renderizado importante
         self._grafo_view.renderizar(pantalla)
@@ -41,6 +40,9 @@ class MainView(BaseView):
         if self.popup_activo():
             print("[Renderizar] Dibujando el popup")
             self._popup.dibujar()
+        vehiculo = self._controller.obtener_vehiculo_seleccionado()
+        if vehiculo:
+            self._mostrar_info_vehiculo(pantalla, vehiculo)
     def mostrar_popup_nombre_ciudad(self, x, y):
         print(f"[Popup] Creando popup en ({x}, {y})")
         self._popup = NombreCiudadPopup(self._pantalla, self._controller, x, y)
@@ -58,3 +60,27 @@ class MainView(BaseView):
             self._panel_control_view.manejar_evento(evento)
             self._info_estado_view.manejar_evento(evento)
             return False
+
+    def _mostrar_info_vehiculo(self, pantalla, vehiculo):
+        fuente = pygame.font.Font(None, 22)
+        # Usamos la posición y dimensiones solicitadas
+        x, y, ancho, alto = 390, 590, 250, 170
+        fondo = pygame.Rect(x, y, ancho, alto)
+
+        # Dibujar fondo y borde
+        pygame.draw.rect(pantalla, (240, 240, 240), fondo)
+        pygame.draw.rect(pantalla, NEGRO, fondo, 2)
+
+        ruta_str = " - ".join(nodo.nombre for nodo in vehiculo._ruta)
+
+        lineas = [
+            f"Tipo: {vehiculo.tipo}",
+            f"Origen: {vehiculo._ruta[0].nombre if vehiculo._ruta else 'N/A'}",
+            f"Destino: {vehiculo._ruta[-1].nombre if vehiculo._ruta else 'N/A'}",
+            f"Ruta: {ruta_str}"
+        ]
+
+        for i, linea in enumerate(lineas):
+            texto = fuente.render(linea, True, NEGRO)
+            pantalla.blit(texto, (x + 10, y + 10 + i * 30))
+

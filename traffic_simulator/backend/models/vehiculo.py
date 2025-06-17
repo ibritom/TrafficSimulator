@@ -12,11 +12,19 @@ class Vehiculo:
         self._pos_x, self._pos_y = ruta[0].coordenadas if ruta else (0, 0)
         self._activo = True
         self._color = (255, 0, 0)  # Rojo por defecto
+        self._tipo = 'normal'
+
+    @property
+    def tipo(self):
+        return self._tipo
 
     @property
     def activo(self):
         return self._activo
 
+    @property
+    def ruta(self):
+        return self.ruta
     @property
     def posicion(self):
         return (self._pos_x, self._pos_y)
@@ -55,6 +63,7 @@ class VehiculoEmergencia(Vehiculo):
     def __init__(self, ruta, velocidad=4):
         super().__init__(ruta, velocidad)
         self._color = (0, 0, 255)  # Azul para emergencia
+        self._tipo = 'emergencia'  # En VehiculoEmergencia
 
     def obtener_prioridad(self):
         return 3  # Mayor prioridad
@@ -65,6 +74,8 @@ class VehiculoComercial(Vehiculo):
 
     def __init__(self, ruta, velocidad=1.5):
         super().__init__(ruta, velocidad)
+        self._tipo = 'comercial'  # En VehiculoComercial
+
         self._color = (0, 255, 0)  # Verde para comercial
 
     def obtener_prioridad(self):

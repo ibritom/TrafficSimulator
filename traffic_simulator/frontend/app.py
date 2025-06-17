@@ -25,7 +25,7 @@ class TrafficSimulatorApp:
         self._velocidad_simulacion = 1.0
         self._pausado = False
         self._tiempo_ultimo_auto = 0  # tiempo del último vehículo generado
-        self._intervalo_generacion = 1000 # 2000 ms = 2 segundos
+        self._intervalo_generacion = 500 # 2000 ms = 2 segundos
         self._simulacion_activa = False  # ← la simulación no arranca automáticamente
 
     def _inicializar_pygame(self):
@@ -59,7 +59,13 @@ class TrafficSimulatorApp:
             ("Cartago", 600, 400),
             ("Heredia", 300, 200),
             ("Alajuela", 200, 250),
-            ("Puntarenas", 150, 450)
+            ("Puntarenas", 150, 450),
+            ("Guanacaste", 800,500),
+            ("Puerto Viejo",1200,500),
+            ("Pavas",1200,50),
+            ("San Pedro",700,200),
+            ("Curridabat",950,300)
+
         ]
 
         for nombre, x, y in ciudades:
@@ -130,7 +136,12 @@ class TrafficSimulatorApp:
         """Maneja eventos de mouse"""
         pos = evento.pos
         if evento.button == 1:  # Click izquierdo
-            self._controller.manejar_click(pos[0], pos[1])
+            vehiculo = self._controller.obtener_vehiculo_en_posicion(pos[0], pos[1])
+            if vehiculo:
+                self._controller.seleccionar_vehiculo(vehiculo)
+
+            else:
+                self._controller.manejar_click(pos[0], pos[1])
         elif evento.button == 3:  # Click derecho
             if self._controller._modo_actual == "DIJKSTRA":
                 self._controller.agregar_vehiculo_destino(pos[0], pos[1])
@@ -157,6 +168,7 @@ class TrafficSimulatorApp:
             K_c: self._controller.reiniciar_simulacion,
             K_s: lambda: self._controller.generar_vehiculos_aleatorios(5),
             K_p: self._iniciar_simulacion_automatica,
+            K_i: lambda: self._controller.cambiar_modo("INFO"),
 
             K_PLUS: lambda: self._cambiar_velocidad(0.5),
             K_MINUS: lambda: self._cambiar_velocidad(-0.5),
@@ -187,7 +199,7 @@ class TrafficSimulatorApp:
             tiempo_actual = pygame.time.get_ticks()
             if tiempo_actual - self._tiempo_ultimo_auto >= self._intervalo_generacion:
                 print("[Simulación] Generando 10 vehículos automáticamente")
-                self._controller.generar_vehiculos_aleatorios(10)
+                self._controller.generar_vehiculos_aleatorios(20)
                 self._tiempo_ultimo_auto = tiempo_actual
 
     def _renderizar(self):

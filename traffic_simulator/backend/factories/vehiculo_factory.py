@@ -6,7 +6,7 @@ class VehiculoFactory:
     """Patrón Factory - Crea diferentes tipos de vehículos"""
 
     @staticmethod
-    def crear_vehiculo(tipo, ruta, velocidad_base=2):
+    def crear_vehiculo(tipo,ruta, velocidad_base=1):
         """Crea un vehículo según el tipo especificado"""
         if tipo == 'normal':
             return Vehiculo(ruta, velocidad_base)
