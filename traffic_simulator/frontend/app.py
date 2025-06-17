@@ -24,6 +24,9 @@ class TrafficSimulatorApp:
         self._reloj = pygame.time.Clock()
         self._velocidad_simulacion = 1.0
         self._pausado = False
+        self._tiempo_ultimo_auto = 0  # tiempo del último vehículo generado
+        self._intervalo_generacion = 1000 # 2000 ms = 2 segundos
+        self._simulacion_activa = False  # ← la simulación no arranca automáticamente
 
     def _inicializar_pygame(self):
         """Configura los componentes básicos de PyGame"""
@@ -153,6 +156,8 @@ class TrafficSimulatorApp:
             K_r: self._controller.alternar_visualizacion_rutas,
             K_c: self._controller.reiniciar_simulacion,
             K_s: lambda: self._controller.generar_vehiculos_aleatorios(5),
+            K_p: self._iniciar_simulacion_automatica,
+
             K_PLUS: lambda: self._cambiar_velocidad(0.5),
             K_MINUS: lambda: self._cambiar_velocidad(-0.5),
             K_SPACE: self._alternar_pausa,
@@ -175,9 +180,15 @@ class TrafficSimulatorApp:
 
     def _actualizar_estado(self):
         """Actualiza el estado de la simulación"""
-        # Actualización basada en velocidad
         for _ in range(int(self._velocidad_simulacion)):
             self._controller.actualizar_simulacion()
+
+        if self._simulacion_activa:
+            tiempo_actual = pygame.time.get_ticks()
+            if tiempo_actual - self._tiempo_ultimo_auto >= self._intervalo_generacion:
+                print("[Simulación] Generando 10 vehículos automáticamente")
+                self._controller.generar_vehiculos_aleatorios(10)
+                self._tiempo_ultimo_auto = tiempo_actual
 
     def _renderizar(self):
         """Renderiza todos los componentes"""
@@ -194,3 +205,12 @@ class TrafficSimulatorApp:
         """Destructor para limpieza segura"""
         if pygame.get_init():
             pygame.quit()
+
+    def _iniciar_simulacion_automatica(self):
+        """Inicia la simulación automática al presionar 'P'"""
+        if not self._simulacion_activa:
+            self._simulacion_activa = True
+            self._tiempo_ultimo_auto = pygame.time.get_ticks()
+            print("Simulación automática iniciada")
+        else:
+            print("Simulación ya estaba activa")

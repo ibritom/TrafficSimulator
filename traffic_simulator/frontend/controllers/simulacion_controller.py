@@ -3,6 +3,8 @@ from traffic_simulator.backend.interfaces.observer_interface import Observer
 from traffic_simulator.backend.services.simulacion_facade import SimulacionFacade
 from traffic_simulator.backend.factories.vehiculo_factory import VehiculoFactory
 import random
+import threading
+import time
 from traffic_simulator.backend.models.nodo import Nodo
 from traffic_simulator.frontend.views.nombre_ciudad_popup import NombreCiudadPopup
 
@@ -12,6 +14,8 @@ class SimulacionController(Observer):
     def __init__(self):
         self._simulacion = SimulacionFacade()
         self._simulacion.agregar_observador(self)
+        self._simulacion_activa = False
+        self._hilo_simulacion = None
         self._vehiculos = []
         self._modo_actual = "AGREGAR_NODO"
         self._nodo_seleccionado = None
