@@ -3,17 +3,21 @@ from traffic_simulator.backend.interfaces.observer_interface import Observable
 from traffic_simulator.backend.models.grafo_lista_adyacencia import GrafoListaAdyacencia
 from traffic_simulator.backend.models.nodo import Nodo
 from traffic_simulator.backend.services.dijkstra_strategy import DijkstraStrategy
+from traffic_simulator.backend.services.calculador_peso import CalculadorPeso
+from traffic_simulator.backend.interfaces.calculador_peso_interface import CalculadorPesoInterface
+
 import math
 
 
 class SimulacionFacade(Observable):
     """Patrón Facade - Simplifica la interacción con el sistema de simulación"""
 
-    def __init__(self):
+    def __init__(self,calculador_peso=None):
         super().__init__()
         self._grafo = GrafoListaAdyacencia()
         self._algoritmo_ruta = DijkstraStrategy()
         self._contador_nodos = 1
+        self._calculador_peso = CalculadorPeso() if calculador_peso is None else calculador_peso
 
     def crear_nodo(self, nombre, x=0, y=0):
         """Crea un nuevo nodo en el grafo"""
@@ -40,7 +44,7 @@ class SimulacionFacade(Observable):
             # Calcular peso basado en distancia euclidiana
             origen = self._grafo.obtener_nodo(origen_id)
             destino = self._grafo.obtener_nodo(destino_id)
-
+            peso = self._calculador_peso.calcular_peso_base(origen, destino)
             if origen and destino:
                 dx = origen.x - destino.x
                 dy = origen.y - destino.y
@@ -55,8 +59,36 @@ class SimulacionFacade(Observable):
             return True
         return False
 
+    def actualizar_pesos_dinamicos(self):
+        """Actualiza los pesos dinámicos de todas las aristas según el cálculo actual"""
+        for nodo in self._grafo.obtener_todos_los_nodos():
+            origen_id = nodo.identificador
+            vecinos = self._grafo.obtener_vecinos(origen_id)
+
+            for vecino, _ in vecinos:
+                destino_id = vecino.identificador
+
+                arista = self._grafo.obtener_arista(origen_id, destino_id)
+                if arista:
+                    # Inicializar propiedades si no existen
+                    if not hasattr(arista, 'vehiculos_actuales'):
+                        arista.vehiculos_actuales = 0
+                        arista.capacidad = 10
+                        arista.accidentes = 0
+                        arista.construcciones = 0
+                        arista.operativos = 0
+                        arista.clima_adverso = False
+                        arista.bloqueada = not arista.activa  # Se usa si la arista está inactiva
+
+                    nuevo_peso = self._calculador_peso.calcular_peso_dinamico(
+                        arista.origen, arista.destino, arista
+                    )
+
+                    arista._peso = nuevo_peso
+
     def calcular_rutas_optimas(self, origen_id):
         """Calcula todas las rutas óptimas desde un nodo origen"""
+        self.actualizar_pesos_dinamicos()  # 🔹 Llama a la actualización antes del algoritmo
         self._algoritmo_ruta.calcular_todas_las_rutas(self._grafo, origen_id)
         self.notificar_observadores('rutas_calculadas', origen_id)
 

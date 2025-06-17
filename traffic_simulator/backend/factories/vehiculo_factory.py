@@ -1,5 +1,5 @@
 # backend/factories/vehiculo_factory.py (Patrón Factory)
-from ..models.vehiculo import Vehiculo, VehiculoEmergencia, VehiculoComercial
+from traffic_simulator.backend.models.vehiculo import Vehiculo, VehiculoEmergencia, VehiculoComercial
 
 
 class VehiculoFactory:

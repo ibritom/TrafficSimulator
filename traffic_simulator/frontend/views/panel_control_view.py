@@ -1,16 +1,33 @@
 # frontend/views/panel_control_view.py
 import pygame
 from pygame.locals import *
-
+import os
+from pathlib import Path
 from traffic_simulator.frontend.views.base_view import BaseView
 from traffic_simulator.backend.utils.constantes import *
 from traffic_simulator.frontend.views.boton import *
 from traffic_simulator.backend.utils.constantes import *
 from traffic_simulator.frontend.controllers.simulacion_controller import *
 
-# imagenes para los botones
-playImg = pygame.image.load("C:/Users/jeijo/TrafficSimulator/assets/playbutton.png")
-pauseImg = pygame.image.load("C:/Users/jeijo/TrafficSimulator/assets/pausebutton.png")
+
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
+
+# Cargar imágenes con manejo de errores
+try:
+    play_img_path = os.path.join(BASE_DIR, "assets", "playbutton.png")
+    pause_img_path = os.path.join(BASE_DIR, "assets", "pausebutton.png")
+
+    playImg = pygame.image.load(play_img_path)
+    pauseImg = pygame.image.load(pause_img_path)
+except pygame.error as e:
+    print(f"Error cargando imágenes: {e}")
+    # Crear imágenes de respaldo
+    playImg = pygame.Surface((100, 100))
+    playImg.fill((0, 255, 0))  # Verde para play
+    pauseImg = pygame.Surface((100, 100))
+    pauseImg.fill((255, 0, 0))  # Rojo para pause
+
+
 class PanelControlView(BaseView):
     """Vista para el panel de control - Principio SRP"""
 

@@ -38,7 +38,12 @@ class TrafficSimulatorApp:
         self._controller = SimulacionController()
 
         # Capa View (inyectando el controller)
-        self._main_view = MainView(self._controller)
+        self._main_view = MainView(self._controller, self._pantalla)
+        # ✅ ESTA LÍNEA ES CLAVE:
+        self._controller.establecer_vista(self._main_view)
+
+        self._configurar_ejemplo_inicial()
+
 
         # Configuración inicial de ejemplo
         self._configurar_ejemplo_inicial()
@@ -55,7 +60,7 @@ class TrafficSimulatorApp:
         ]
 
         for nombre, x, y in ciudades:
-            self._controller._manejar_agregar_nodo(x, y)
+            self._controller.crear_nodo_con_nombre(nombre, x, y)
 
         # Conexiones de ejemplo
         conexiones = [
@@ -107,10 +112,16 @@ class TrafficSimulatorApp:
         for evento in pygame.event.get():
             if evento.type == QUIT:
                 self._ejecutando = False
+                # 🔹 Si el popup está activo, enviarle eventos exclusivamente
+            elif self._main_view.popup_activo():
+                self._main_view.manejar_evento(evento)
+
             elif evento.type == MOUSEBUTTONDOWN:
                 self._manejar_click(evento)
             elif evento.type == KEYDOWN:
                 self._manejar_teclado(evento)
+            else:
+                self._main_view.manejar_evento(evento)
 
     def _manejar_click(self, evento):
         """Maneja eventos de mouse"""
@@ -170,7 +181,7 @@ class TrafficSimulatorApp:
 
     def _renderizar(self):
         """Renderiza todos los componentes"""
-        self._pantalla.fill(BLANCO)
+
         self._main_view.renderizar(self._pantalla)
         pygame.display.flip()
 

@@ -4,7 +4,7 @@ from traffic_simulator.backend.services.simulacion_facade import SimulacionFacad
 from traffic_simulator.backend.factories.vehiculo_factory import VehiculoFactory
 import random
 from traffic_simulator.backend.models.nodo import Nodo
-
+from traffic_simulator.frontend.views.nombre_ciudad_popup import NombreCiudadPopup
 
 class SimulacionController(Observer):
     """Controlador principal - Patrón MVC"""
@@ -20,9 +20,12 @@ class SimulacionController(Observer):
         self._view = None  # Se establecerá desde la vista
         self.nodo_origen_dijkstra=None
 
+
     def establecer_vista(self, view):
         """Establece la referencia a la vista"""
         self._view = view
+        if hasattr(view, '_pantalla'):
+            self._pantalla = view._pantalla
 
     def actualizar(self, evento, datos):
         """Implementación del patrón Observer"""
@@ -35,7 +38,9 @@ class SimulacionController(Observer):
         self._modo_actual = nuevo_modo
         self._nodo_seleccionado = None
 
+
     def manejar_click(self, x, y, boton='izquierdo'):
+        print(f"[Click] Coordenadas: ({x}, {y}) - Modo: {self._modo_actual}")
         """Maneja los clicks del usuario según el modo actual"""
         if self._modo_actual == "AGREGAR_NODO":
             return self._manejar_agregar_nodo(x, y)
@@ -64,12 +69,17 @@ class SimulacionController(Observer):
         """Wrapper para el método del modelo"""
         return self._simulacion.obtener_nodo_por_posicion(x, y)
 
+    def crear_nodo_con_nombre(self, nombre, x, y):
+        """Crea un nodo y lo agrega al modelo"""
+        self._simulacion.crear_nodo(nombre, x, y)
+
     def _manejar_agregar_nodo(self, x, y):
         """Maneja la adición de nodos"""
-        nombre = f"Ciudad_{len(self._simulacion.obtener_todos_los_nodos()) + 1}"
-        return self._simulacion.crear_nodo(nombre, x, y)
-
+        print(f"[Agregar Nodo] Llamando a mostrar_popup_nombre_ciudad en ({x}, {y})")
+        if self._view:
+            self._view.mostrar_popup_nombre_ciudad(x, y)
     def _manejar_conectar_nodos(self, x, y):
+
         """Maneja la conexión entre nodos"""
         nodo_clickeado = self._simulacion.obtener_nodo_por_posicion(x, y)
 
@@ -88,6 +98,13 @@ class SimulacionController(Observer):
                 self._nodo_seleccionado = None
                 return resultado
             return False
+
+    def nombre_ya_existe(self, nombre: str) -> bool:
+        """Verifica si ya existe un nodo con ese nombre"""
+        for nodo in self._simulacion.obtener_todos_los_nodos():
+            if nodo.nombre.lower() == nombre.lower():
+                return True
+        return False
 
     def _manejar_dijkstra(self, x, y):
         nodo_clickeado = self._simulacion.obtener_nodo_por_posicion(x, y)
@@ -162,3 +179,4 @@ print("✓ Patrón MVC para separar responsabilidades")
 print("✓ Principios SOLID aplicados")
 print("✓ Encapsulación mejorada")
 print("✓ Separación clara Frontend/Backend")
+
