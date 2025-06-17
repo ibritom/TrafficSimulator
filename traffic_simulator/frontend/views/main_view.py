@@ -63,24 +63,45 @@ class MainView(BaseView):
 
     def _mostrar_info_vehiculo(self, pantalla, vehiculo):
         fuente = pygame.font.Font(None, 22)
-        # Usamos la posición y dimensiones solicitadas
         x, y, ancho, alto = 390, 590, 250, 170
         fondo = pygame.Rect(x, y, ancho, alto)
 
-        # Dibujar fondo y borde
+        # Fondo y borde
         pygame.draw.rect(pantalla, (240, 240, 240), fondo)
         pygame.draw.rect(pantalla, NEGRO, fondo, 2)
 
+        # Ruta completa
         ruta_str = " - ".join(nodo.nombre for nodo in vehiculo._ruta)
 
+        # Información base
         lineas = [
             f"Tipo: {vehiculo.tipo}",
             f"Origen: {vehiculo._ruta[0].nombre if vehiculo._ruta else 'N/A'}",
             f"Destino: {vehiculo._ruta[-1].nombre if vehiculo._ruta else 'N/A'}",
-            f"Ruta: {ruta_str}"
+            "Ruta: "
         ]
 
+        # Render info base
         for i, linea in enumerate(lineas):
             texto = fuente.render(linea, True, NEGRO)
-            pantalla.blit(texto, (x + 10, y + 10 + i * 30))
+            pantalla.blit(texto, (x + 10, y + 10 + i * 25))
 
+        # Render ruta con salto de línea
+        ruta_render_y = y + 10 + len(lineas) * 25
+        palabras = ruta_str.split(" ")
+        linea_actual = ""
+
+        for palabra in palabras:
+            prueba = f"{linea_actual} {palabra}".strip()
+            if fuente.size(prueba)[0] <= ancho - 20:
+                linea_actual = prueba
+            else:
+                texto = fuente.render(linea_actual, True, NEGRO)
+                pantalla.blit(texto, (x + 10, ruta_render_y))
+                ruta_render_y += 20
+                linea_actual = palabra
+
+        # Render última línea si quedó algo
+        if linea_actual:
+            texto = fuente.render(linea_actual, True, NEGRO)
+            pantalla.blit(texto, (x + 10, ruta_render_y))
