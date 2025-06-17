@@ -47,7 +47,7 @@ class NombreCiudadPopup:
             self.activo = False
 
     def dibujar(self):
-        print("[Popup] Dibujando en pantalla")
+
         pygame.draw.rect(self.pantalla, (200, 200, 200), (450, 250, 400, 180))
         pygame.draw.rect(self.pantalla, (255, 255, 255), self.rect_input)
         pygame.draw.rect(self.pantalla, (0, 255, 0), self.boton_ok)

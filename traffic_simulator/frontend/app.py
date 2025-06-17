@@ -64,7 +64,12 @@ class TrafficSimulatorApp:
             ("Puerto Viejo",1200,500),
             ("Pavas",1200,50),
             ("San Pedro",700,200),
-            ("Curridabat",950,300)
+            ("Curridabat",950,300),
+            ("Upala",452, 98),
+            ("Tres Ríos",351, 495),
+            ("Tibás",1252, 276),
+            ("Prusia",811, 52)
+
 
         ]
 
@@ -77,7 +82,17 @@ class TrafficSimulatorApp:
             ("San José", "Heredia"),
             ("San José", "Alajuela"),
             ("Alajuela", "Puntarenas"),
-            ("Heredia", "Alajuela")
+            ("Heredia", "Alajuela"),
+            ("Cartago", "Curridabat"),
+            ("Curridabat", "San Pedro"),
+            ("San Pedro", "Guanacaste"),
+            ("Guanacaste", "Puerto Viejo"),
+            ("Puerto Viejo", "Pavas"),
+            ("Pavas", "Tibás"),
+            ("Tibás", "Upala"),
+            ("Upala", "Prusia"),
+            ("Prusia", "Tres Ríos"),
+            ("Tres Ríos", "Cartago")
         ]
 
         for origen, destino in conexiones:

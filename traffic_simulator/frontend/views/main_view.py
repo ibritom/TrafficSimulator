@@ -38,7 +38,7 @@ class MainView(BaseView):
         self._panel_control_view.renderizar(pantalla)
         self._info_estado_view.renderizar(pantalla)
         if self.popup_activo():
-            print("[Renderizar] Dibujando el popup")
+
             self._popup.dibujar()
         vehiculo = self._controller.obtener_vehiculo_seleccionado()
         if vehiculo:
