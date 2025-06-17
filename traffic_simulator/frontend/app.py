@@ -146,17 +146,7 @@ class TrafficSimulatorApp:
             if self._controller._modo_actual == "DIJKSTRA":
                 self._controller.agregar_vehiculo_destino(pos[0], pos[1])
 
-    def _manejar_click(self, evento):
-        """Maneja eventos de mouse"""
-        pos = evento.pos
-        if evento.button == 1:  # Click izquierdo
-            self._controller.manejar_click(pos[0], pos[1])
-        elif evento.button == 3:  # Click derecho
-            # Modificado para usar el método existente del controlador
-            if self._controller._modo_actual == "DIJKSTRA":
-                nodo = self._controller._simulacion.obtener_nodo_por_posicion(pos[0], pos[1])
-                if nodo:
-                    self._controller.agregar_carro(nodo.identificador)
+
 
     def _manejar_teclado(self, evento):
         """Maneja eventos de teclado"""

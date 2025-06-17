@@ -229,6 +229,12 @@ class SimulacionController(Observer):
     def obtener_nodo_origen_dijkstra(self):
         return self._nodo_origen_dijkstra
 
+    # frontend/controllers/simulacion_controller.py
+    def seleccionar_vehiculo(self, vehiculo):
+        """Selecciona un vehículo para mostrar información"""
+        self._vehiculo_seleccionado = vehiculo
+        print(f"[INFO] Vehículo seleccionado: {vehiculo.tipo}")
+
 
 print("=== REFACTORIZACIÓN COMPLETA ===")
 print("✓ Interfaces implementadas (Principio DIP)")
