@@ -235,6 +235,31 @@ class SimulacionController(Observer):
         self._vehiculo_seleccionado = vehiculo
         print(f"[INFO] Vehículo seleccionado: {vehiculo.tipo}")
 
+    def agregar_vehiculo_destino(self, x, y):
+        """Agrega un vehículo hacia un nodo destino en modo Dijkstra"""
+        if not self._nodo_origen_dijkstra:
+            print("[Error] No se ha seleccionado un nodo origen para Dijkstra.")
+            return
+
+        nodo_destino = self._simulacion.obtener_nodo_por_posicion(x, y)
+        if not nodo_destino:
+            print("[Error] No se encontró un nodo en la posición clickeada.")
+            return
+
+        ruta = self._simulacion.obtener_ruta_entre_nodos(
+            self._nodo_origen_dijkstra.identificador,
+            nodo_destino.identificador
+        )
+
+        if ruta:
+            tipo_vehiculo = random.choice(['normal', 'emergencia', 'comercial'])
+            vehiculo = VehiculoFactory.crear_vehiculo(tipo_vehiculo, ruta)
+            self._vehiculos.append(vehiculo)
+            self._simulacion.notificar_observadores('vehiculo_agregado', vehiculo)
+            print(f"[Vehículo] {tipo_vehiculo} agregado de {ruta[0].nombre} a {ruta[-1].nombre}")
+        else:
+            print("[Advertencia] No se encontró ruta entre los nodos.")
+
 
 print("=== REFACTORIZACIÓN COMPLETA ===")
 print("✓ Interfaces implementadas (Principio DIP)")
