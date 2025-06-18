@@ -1,4 +1,3 @@
-# frontend/app.py
 import pygame
 import sys
 from pygame.locals import *
@@ -10,10 +9,7 @@ from traffic_simulator.backend.utils.constantes import *
 class TrafficSimulatorApp:
     """Clase principal de la aplicación que implementa el patrón MVC.
 
-    Responsabilidades:
-    - Inicializar y gestionar el bucle principal del juego
-    - Coordinar entre el modelo, vista y controlador
-    - Manejar eventos del sistema
+
     """
 
     def __init__(self):
@@ -42,7 +38,7 @@ class TrafficSimulatorApp:
 
         # Capa View (inyectando el controller)
         self._main_view = MainView(self._controller, self._pantalla)
-        # ✅ ESTA LÍNEA ES CLAVE:
+
         self._controller.establecer_vista(self._main_view)
 
 
@@ -128,9 +124,12 @@ class TrafficSimulatorApp:
         print("R: Mostrar/Ocultar Rutas")
         print("S: Generar Vehículos Aleatorios")
         print("C: Limpiar Simulación")
+        print("T: Recomendación a usuario")
+        print("I: Información de vehículos")
+        print("P: Iniciar simulación")
         print("ESPACIO: Pausar/Reanudar")
-        print("+: Aumentar velocidad")
-        print("-: Disminuir velocidad")
+        print("a: Aumentar velocidad")
+        print("d: Disminuir velocidad")
         print("ESC: Salir")
 
     def _manejar_eventos(self):
@@ -138,7 +137,7 @@ class TrafficSimulatorApp:
         for evento in pygame.event.get():
             if evento.type == QUIT:
                 self._ejecutando = False
-                # 🔹 Si el popup está activo, enviarle eventos exclusivamente
+                # Si el popup está activo, enviarle eventos exclusivamente
             elif self._main_view.popup_activo():
                 self._main_view.manejar_evento(evento)
 
@@ -173,7 +172,7 @@ class TrafficSimulatorApp:
             K_3: lambda: self._controller.cambiar_modo("DIJKSTRA"),
             K_r: self._controller.alternar_visualizacion_rutas,
             K_c: self._controller.reiniciar_simulacion,
-            K_s: lambda: self._controller.generar_vehiculos_aleatorios(20),
+            K_s: lambda: self._controller.generar_vehiculos_aleatorios(5),
             K_p: self._iniciar_simulacion_automatica,
             K_i: lambda: self._controller.cambiar_modo("INFO"),
             K_t: self._main_view.alternar_mostrar_recomendaciones,

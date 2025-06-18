@@ -1,4 +1,4 @@
-# backend/interfaces/observer_interface.py
+
 from abc import ABC, abstractmethod
 
 

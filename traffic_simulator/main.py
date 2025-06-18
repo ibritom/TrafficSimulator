@@ -1,28 +1,9 @@
-#!/usr/bin/env python3
-"""
-Traffic Simulator - Proyecto #3
-Instituto Tecnológico de Costa Rica
-Escuela de Ingeniería en Computadores
-Algoritmos y Estructuras de Datos I (CE 1103)
-
-Simulador de tráfico vehicular con algoritmos de grafos
-"""
-
 import sys
 import pygame
 from traffic_simulator.frontend.app import TrafficSimulatorApp
 
 
-def verificar_dependencias():
-    """Verifica que todas las dependencias estén instaladas"""
-    try:
-        import pygame
-        print("✓ PyGame instalado correctamente")
-        return True
-    except ImportError:
-        print("✗ Error: PyGame no está instalado")
-        print("Instale con: pip install pygame")
-        return False
+
 
 
 def mostrar_banner():
@@ -34,6 +15,12 @@ def mostrar_banner():
 ║          Instituto Tecnológico de Costa Rica                 ║
 ║        Algoritmos y Estructuras de Datos I (CE 1103)         ║
 ║                                                              ║
+║                         Integrantes:                         ║
+║                  Iván Ignacio Brito Medina                   ║
+║                  Jeison Johel Picado Picado                  ║
+║                   José Fabio Ruiz Morales                    ║
+║               Antony Javier Hernández Castillo               ║
+║                                                              ║
 ║  Simulador de tráfico vehicular con algoritmos de grafos     ║
 ╚══════════════════════════════════════════════════════════════╝
     """
@@ -44,8 +31,7 @@ def main():
     """Función principal del programa"""
     mostrar_banner()
 
-    if not verificar_dependencias():
-        sys.exit(1)
+
 
     try:
         app = TrafficSimulatorApp()
@@ -60,11 +46,4 @@ def main():
 
 
 if __name__ == "__main__":
-    # Manejo básico de argumentos
-    if len(sys.argv) > 1 and sys.argv[1] in ['-h', '--help']:
-        print("Uso: python main.py [opciones]")
-        print("Opciones:")
-        print("  -h, --help  Muestra este mensaje")
-        sys.exit(0)
-
     main()

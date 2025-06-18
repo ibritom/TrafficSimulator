@@ -1,14 +1,10 @@
-# frontend/controllers/simulacion_controller.py (Patrón MVC)
 import pygame
 from traffic_simulator.backend.interfaces.observer_interface import Observer
 from traffic_simulator.backend.services.simulacion_facade import SimulacionFacade
 from traffic_simulator.backend.factories.vehiculo_factory import VehiculoFactory
 import random
-import threading
-import time
-from traffic_simulator.backend.models.nodo import Nodo
 from traffic_simulator.backend.utils.constantes import *
-from traffic_simulator.frontend.views.nombre_ciudad_popup import NombreCiudadPopup
+
 
 class SimulacionController(Observer):
     """Controlador principal - Patrón MVC"""
@@ -23,7 +19,7 @@ class SimulacionController(Observer):
         self._nodo_seleccionado = None
         self._mostrar_rutas = False
         self._velocidad_simulacion = 1.0
-        self._view = None  # Se establecerá desde la vista
+        self._view = None
         self.nodo_origen_dijkstra=None
         self._vehiculo_seleccionado = None
         self._tipo_obstaculo_actual = "accidentes"
@@ -77,9 +73,7 @@ class SimulacionController(Observer):
             self._simulacion.notificar_observadores('vehiculo_agregado', vehiculo)
 
 
-    def obtener_nodo_por_posicion(self, x: int, y: int) -> Nodo:
-        """Wrapper para el método del modelo"""
-        return self._simulacion.obtener_nodo_por_posicion(x, y)
+
 
     def crear_nodo_con_nombre(self, nombre, x, y):
         """Crea un nodo y lo agrega al modelo"""
@@ -227,7 +221,7 @@ class SimulacionController(Observer):
         """Devuelve el vehículo actualmente seleccionado"""
         return self._vehiculo_seleccionado
 
-    # frontend/controllers/simulacion_controller.py
+
     def obtener_ruta_vehiculo_seleccionado(self):
         if self._vehiculo_seleccionado:
             return self._vehiculo_seleccionado.ruta
@@ -236,7 +230,7 @@ class SimulacionController(Observer):
     def obtener_nodo_origen_dijkstra(self):
         return self._nodo_origen_dijkstra
 
-    # frontend/controllers/simulacion_controller.py
+
     def seleccionar_vehiculo(self, vehiculo):
         """Selecciona un vehículo para mostrar información"""
         self._vehiculo_seleccionado = vehiculo
@@ -323,7 +317,7 @@ class SimulacionController(Observer):
         proy_y = y1 + t * (y2 - y1)
         return ((px - proy_x) ** 2 + (py - proy_y) ** 2) ** 0.5
 
-    # En simulacion_controller.py
+
     def mostrar_puntos_criticos(self):
         puntos = self._simulacion.obtener_puntos_criticos()
         print("\n[Puntos Críticos - Recomendación de planificación]")
@@ -336,16 +330,5 @@ class SimulacionController(Observer):
     def obtener_aristas_criticas(self):
         return self._simulacion.obtener_aristas_criticas_con_peso()
 
-
-print("=== REFACTORIZACIÓN COMPLETA ===")
-print("✓ Interfaces implementadas (Principio DIP)")
-print("✓ Patrón Strategy para algoritmos")
-print("✓ Patrón Observer para comunicación")
-print("✓ Patrón Facade para simplificar el backend")
-print("✓ Patrón Factory para crear vehículos")
-print("✓ Patrón MVC para separar responsabilidades")
-print("✓ Principios SOLID aplicados")
-print("✓ Encapsulación mejorada")
-print("✓ Separación clara Frontend/Backend")
 
 

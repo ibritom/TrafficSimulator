@@ -1,4 +1,4 @@
-# backend/services/calculador_peso.py
+
 import math
 from traffic_simulator.backend.interfaces.calculador_peso_interface import CalculadorPesoInterface
 

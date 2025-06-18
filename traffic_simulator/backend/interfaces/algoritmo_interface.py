@@ -1,4 +1,4 @@
-# backend/interfaces/algoritmo_interface.py
+
 from abc import ABC, abstractmethod
 
 
@@ -12,3 +12,4 @@ class AlgoritmoRutaInterface(ABC):
     @abstractmethod
     def calcular_todas_las_rutas(self, grafo, origen):
         pass
+

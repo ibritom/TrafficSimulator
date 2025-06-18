@@ -1,4 +1,4 @@
-# backend/interfaces/calculador_peso_interface.py
+
 from abc import ABC, abstractmethod
 
 

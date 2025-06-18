@@ -15,3 +15,4 @@ class verticeUI():
         # crear el circulo
         Figura.crear_circulo(pantalla,x1,x2,y1,y2,color=color)
         print("Ciudad añadida")
+

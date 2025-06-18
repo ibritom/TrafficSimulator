@@ -1,4 +1,4 @@
-# frontend/views/main_view.py
+
 import pygame
 from traffic_simulator.frontend.views.base_view import BaseView
 from traffic_simulator.frontend.views.grafo_view import GrafoView
@@ -133,7 +133,7 @@ class MainView(BaseView):
         if not aristas:
             lineas = ["No hay rutas críticas."]
         else:
-            lineas = ["⚠ Rutas congestionadas:"]
+            lineas = ["Rutas congestionadas:"]
             for nombre1, nombre2, peso in aristas:
                 lineas.append(f"{nombre1} ↔ {nombre2}: peso = {int(peso)}")
 

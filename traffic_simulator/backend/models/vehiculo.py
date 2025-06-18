@@ -1,4 +1,4 @@
-# backend/models/vehiculo.py (Jerarquía de herencia)
+#(Jerarquía de herencia)
 import math
 
 
@@ -14,7 +14,7 @@ class Vehiculo:
         self._color = (255, 0, 0)  # Rojo por defecto
         self._tipo = 'normal'
         self._arista_actual = None
-        self._simulacion = None  # ← se inyectará luego desde el controlador
+        self._simulacion = None  # ← se inyecta ldesde el controlador
         self._recalculo_realizado = False  # ← bandera para evitar repetir prints
         self._nodo_destino = ruta[-1] if ruta else None
         self._nodo_origen = ruta[0] if ruta else None
@@ -34,7 +34,7 @@ class Vehiculo:
 
     @property
     def ruta(self):
-        return self.ruta
+        return self._ruta
     @property
     def posicion(self):
         return (self._pos_x, self._pos_y)
@@ -112,6 +112,7 @@ class Vehiculo:
             self._pos_x += velocidad_ajustada * dx / distancia
             self._pos_y += velocidad_ajustada * dy / distancia
 
+
     def obtener_prioridad(self):
         """Obtiene la prioridad del vehículo para intersecciones"""
         return 1
@@ -135,7 +136,7 @@ class Vehiculo:
         )
 
         if nueva_ruta and len(nueva_ruta) > 1:
-            # Verificación movida dentro de obtener_vecinos: no es necesaria aquí
+
             print(
                 f"[Recalculo] Nueva ruta encontrada para vehículo de {nodo_actual.nombre} a {self._nodo_destino.nombre}")
             ruta_str = " → ".join(n.nombre for n in nueva_ruta)

@@ -1,6 +1,6 @@
-# frontend/views/grafo_view.py
+
 import pygame
-import math
+
 from typing import List, Tuple, Dict, Any
 from traffic_simulator.frontend.views.base_view import BaseView
 from traffic_simulator.backend.utils.constantes import *
@@ -10,15 +10,9 @@ from traffic_simulator.backend.services.calculador_peso import CalculadorPeso
 
 
 class GrafoView(BaseView):
-    """Vista del grafo que implementa el patrón Observer para actualizaciones.
-    Responsabilidades:
-    - Visualización del grafo (nodos, conexiones)
-    - Renderizado de rutas calculadas
-    - Visualización de vehículos en movimiento
-    Cumple con:
-    - SRP: Solo maneja visualización del grafo
-    - OCP: Extiende BaseView sin modificar comportamiento base
-    - DIP: Depende de abstracciones (BaseView)
+    """
+    Vista del grafo que implementa el patrón Observer para actualizaciones.
+
     """
 
     def __init__(self, controller):
@@ -73,7 +67,7 @@ class GrafoView(BaseView):
 
     def _manejar_nuevo_vehiculo(self, vehiculo: Vehiculo) -> None:
         """Prepara visualización para nuevo vehículo"""
-        # Lógica para asociar vehículo con ruta visual si es necesario
+
         pass
 
     def _actualizar_rutas_visibles(self) -> None:
@@ -139,7 +133,7 @@ class GrafoView(BaseView):
         for vehiculo in vehiculos:
             self.dibujar_vehiculo(pantalla, vehiculo)
 
-    # Métodos de dibujo específicos (podrían moverse a una clase helper si crecen demasiado)
+    # Métodos de dibujo específicos
     def dibujar_nodo(self, pantalla: pygame.Surface, nodo: Nodo, color: Tuple[int, int, int]) -> None:
         """Dibuja un nodo con su información asociada"""
         pygame.draw.circle(pantalla, color, (int(nodo.x), int(nodo.y)), self._config_visual['radio_nodo'])
@@ -205,17 +199,19 @@ class GrafoView(BaseView):
     def _obtener_color_congestion(self, peso_base: float, peso_actual: float) -> Tuple[int, int, int]:
         """Determina color según el nivel de congestión"""
         if peso_actual >= 999999:
-            return (50, 50, 50)  # bloqueada = gris oscuro
+            return (GRIS_OSCURO)  # bloqueada = gris oscuro
 
         ratio = peso_actual / peso_base if peso_base > 0 else 1
 
         if ratio <= 1.2:
-            return (0, 200, 0)  # verde
+            return (VERDE)  # verde
         elif ratio <= 1.5:
-            return (255, 255, 0)  # amarillo
+            return (AMARILLO)  # amarillo
         elif ratio <= 2.0:
-            return (255, 165, 0)  # naranja
+            return (NARANJA)  # naranja
         elif ratio <= 3.0:
-            return (255, 80, 0)  # rojo
+            return (ROJO)  # rojo
         else:
-            return (150, 0, 0)  # rojo oscuro
+            return (ROJO_OSCURO)  # rojo oscuro
+
+

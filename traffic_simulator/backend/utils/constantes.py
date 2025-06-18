@@ -13,7 +13,9 @@ GRIS = (128, 128, 128)
 AZUL_CLARO = (173, 216, 230)
 AMARILLO = (255, 255, 0)
 NARANJA = (255, 165, 0)
+ROJO_OSCURO = (150, 0, 0)
 
+GRIS_OSCURO =(50,50,50)
 # Configuración de la simulación
 VELOCIDAD_CARRO = 2  # píxeles por frame
 RADIO_NODO = 20

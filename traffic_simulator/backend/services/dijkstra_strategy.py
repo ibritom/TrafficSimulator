@@ -1,4 +1,4 @@
-# backend/services/dijkstra_strategy.py (Patrón Strategy)
+
 from traffic_simulator.backend.interfaces.algoritmo_interface import AlgoritmoRutaInterface
 from traffic_simulator.backend.models.diccionario import DiccionarioPersonalizado
 
@@ -17,7 +17,7 @@ class DijkstraStrategy(AlgoritmoRutaInterface):
         return self._reconstruir_ruta(destino)
 
     def calcular_todas_las_rutas(self, grafo, origen_id):
-        """Implementación completa del algoritmo Dijkstra"""
+
         # Limpiar metadatos previos
         for nodo in grafo.obtener_todos_los_nodos():
             nodo.limpiar_metadatos()

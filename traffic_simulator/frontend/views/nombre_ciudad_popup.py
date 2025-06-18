@@ -1,4 +1,4 @@
-# frontend/views/nombre_ciudad_popup.py
+
 import pygame
 
 

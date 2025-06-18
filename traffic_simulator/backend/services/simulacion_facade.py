@@ -1,10 +1,10 @@
-# backend/services/simulacion_facade.py (Patrón Facade)
+
 from traffic_simulator.backend.interfaces.observer_interface import Observable
 from traffic_simulator.backend.models.grafo_lista_adyacencia import GrafoListaAdyacencia
 from traffic_simulator.backend.models.nodo import Nodo
 from traffic_simulator.backend.services.dijkstra_strategy import DijkstraStrategy
 from traffic_simulator.backend.services.calculador_peso import CalculadorPeso
-from traffic_simulator.backend.interfaces.calculador_peso_interface import CalculadorPesoInterface
+
 from traffic_simulator.backend.services.analizador_critico import AnalizadorCritico
 import math
 
@@ -98,12 +98,12 @@ class SimulacionFacade(Observable):
 
     def calcular_rutas_optimas(self, origen_id):
         """Calcula todas las rutas óptimas desde un nodo origen"""
-        self.actualizar_pesos_dinamicos()  # 🔹 Llama a la actualización antes del algoritmo
+        self.actualizar_pesos_dinamicos()  #  Llama a la actualización antes del algoritmo
         self._algoritmo_ruta.calcular_todas_las_rutas(self._grafo, origen_id)
         self.notificar_observadores('rutas_calculadas', origen_id)
 
     def obtener_ruta_entre_nodos(self, origen_id, destino_id):
-        self.actualizar_pesos_dinamicos()  # ← CLAVE: actualiza pesos antes del cálculo
+        self.actualizar_pesos_dinamicos()  # ←  actualiza pesos antes del cálculo
         """Obtiene la ruta óptima entre dos nodos específicos"""
         return self._algoritmo_ruta.calcular_ruta_optima(self._grafo, origen_id, destino_id)
 

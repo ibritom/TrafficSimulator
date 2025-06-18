@@ -1,4 +1,4 @@
-# backend/models/nodo.py (Refactorizado)
+
 class Nodo:
     """Representa un nodo en el grafo - Principio SRP"""
 

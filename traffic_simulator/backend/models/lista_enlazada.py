@@ -1,4 +1,4 @@
-# backend/models/lista_enlazada.py (Nueva estructura)
+
 class NodoLista:
     def __init__(self, datos):
         self.datos = datos

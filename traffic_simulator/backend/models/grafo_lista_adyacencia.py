@@ -1,4 +1,4 @@
-# backend/models/grafo_lista_adyacencia.py
+
 from traffic_simulator.backend.interfaces.grafo_interface import GrafoInterface
 from traffic_simulator.backend.models.diccionario import DiccionarioPersonalizado
 

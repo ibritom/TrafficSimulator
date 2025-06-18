@@ -1,12 +1,7 @@
-# frontend/views/panel_control_view.py
-import pygame
-from pygame.locals import *
 import os
 from pathlib import Path
 from traffic_simulator.frontend.views.base_view import BaseView
-from traffic_simulator.backend.utils.constantes import *
 from traffic_simulator.frontend.views.boton import *
-from traffic_simulator.backend.utils.constantes import *
 from traffic_simulator.frontend.controllers.simulacion_controller import *
 
 
@@ -47,7 +42,7 @@ class PanelControlView(BaseView):
 
     def actualizar_desde_modelo(self, evento, datos):
         """Actualiza la vista basada en eventos del modelo"""
-        pass  # El panel de control no necesita actualizaciones directas del modelo
+        pass
 
     def renderizar(self, pantalla):
         """Renderiza el panel de control"""
@@ -137,4 +132,5 @@ class PanelControlView(BaseView):
             print("Acelerar")
         if self.boton_Decelerar.renderizar(pantalla):
             print("Decelerar")
+
 

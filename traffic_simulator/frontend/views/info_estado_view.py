@@ -1,4 +1,4 @@
-# frontend/views/info_estado_view.py
+
 import pygame
 from traffic_simulator.frontend.views.base_view import BaseView
 from traffic_simulator.backend.utils.constantes import *
@@ -13,7 +13,7 @@ class InfoEstadoView(BaseView):
 
     def actualizar_desde_modelo(self, evento, datos):
         """Actualiza la vista basada en eventos del modelo"""
-        pass  # La información de estado no necesita actualizaciones directas del modelo
+        pass
 
     def renderizar(self, pantalla):
         """Renderiza la información de estado"""
@@ -39,7 +39,7 @@ class InfoEstadoView(BaseView):
         controles_adicionales = [
             "S: Generar vehículos aleatorios",
             "SPACE: Pausar/Reanudar",
-            "+/-: Cambiar velocidad",
+            "a/d: Cambiar velocidad",
             "Click Der: Agregar vehículo a destino"
         ]
 

@@ -1,4 +1,4 @@
-# backend/models/arista.py
+
 class Arista:
     """Representa una arista en el grafo - Principio SRP"""
 
@@ -52,7 +52,7 @@ class Arista:
         """Remueve el bloqueo de la arista"""
         self._activa = True
         self.bloqueada = False
-        # Restaurar el peso base si querés
+
 
     def ajustar_peso(self, factor):
         """Ajusta el peso por congestión o condiciones especiales"""
@@ -60,7 +60,7 @@ class Arista:
 
     def establecer_peso_dinamico(self, nuevo_peso):
         if nuevo_peso is None:
-            return  # ← no actualizar si viene de arista bloqueada
+            return
 
         if nuevo_peso >= 999999:
             self.bloquear()

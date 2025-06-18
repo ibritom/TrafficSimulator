@@ -1,4 +1,4 @@
-# frontend/views/base_view.py
+
 from abc import ABC, abstractmethod
 import pygame
 from typing import Any, Dict
@@ -8,11 +8,6 @@ class BaseView(ABC):
     """
     Clase base abstracta para todas las vistas del sistema.
     Implementa el principio de Abierto/Cerrado (OCP) y el patrón Observer.
-
-    Métodos:
-        actualizar_desde_modelo(evento: str, datos: Any) -> None
-        renderizar(pantalla: pygame.Surface) -> None
-        manejar_evento(evento: pygame.event.Event) -> None
     """
 
     def __init__(self, controller: Any):
@@ -29,20 +24,20 @@ class BaseView(ABC):
 
     @abstractmethod
     def actualizar_desde_modelo(self, evento: str, datos: Any) -> None:
-        """
-        Método abstracto para actualizar la vista cuando el modelo cambia.
-        Implementa la parte View del patrón Observer.
 
-        Args:
-            evento: Identificador del tipo de cambio (ej: 'nodo_agregado')
-            datos: Información asociada al evento (opcional)
-        """
+        #Metodo abstracto para actualizar la vista cuando el modelo cambia.
+        #Implementa la parte View del patrón Observer.
+
+        # Args:
+        #     evento: Identificador del tipo de cambio (ej: 'nodo_agregado')
+        #     datos: Información asociada al evento (opcional)
+
         pass
 
     @abstractmethod
     def renderizar(self, pantalla: pygame.Surface) -> None:
         """
-        Método abstracto para renderizar la vista en la pantalla dada.
+        Metodo abstracto para renderizar la vista en la pantalla dada.
 
         Args:
             pantalla: Superficie de PyGame donde se dibujará
@@ -78,7 +73,7 @@ class BaseView(ABC):
     def obtener_config_estilo(self) -> Dict[str, Any]:
         """
         Devuelve configuración de estilo para la vista.
-        Las vistas hijas pueden extender este método.
+        Las vistas hijas pueden extender este metodo.
         """
         return {
             'color_fondo': (255, 255, 255),
