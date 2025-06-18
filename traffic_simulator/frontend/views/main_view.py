@@ -78,6 +78,7 @@ class MainView(BaseView):
             f"Tipo: {vehiculo.tipo}",
             f"Origen: {vehiculo._ruta[0].nombre if vehiculo._ruta else 'N/A'}",
             f"Destino: {vehiculo._ruta[-1].nombre if vehiculo._ruta else 'N/A'}",
+            f"Velocidad: {vehiculo.velocidad_actual:.2f} px/frame",
             "Ruta: "
         ]
 

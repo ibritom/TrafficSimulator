@@ -49,8 +49,11 @@ class DijkstraStrategy(AlgoritmoRutaInterface):
 
             # Examinar vecinos
             vecinos = grafo.obtener_vecinos(nodo_actual_id)
-            for vecino, peso in vecinos:
+            for vecino, arista in vecinos:
                 if not vecino.obtener_metadato('visitado'):
+                    peso = arista.peso
+                    print(f"[Dijkstra] Evaluando {nodo_actual.nombre} → {vecino.nombre}, peso = {arista.peso}")
+
                     nueva_distancia = nodo_actual.obtener_metadato('distancia') + peso
 
                     if nueva_distancia < vecino.obtener_metadato('distancia'):

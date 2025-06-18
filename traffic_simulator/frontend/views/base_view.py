@@ -16,6 +16,7 @@ class BaseView(ABC):
     """
 
     def __init__(self, controller: Any):
+
         """
         Constructor base para todas las vistas.
 

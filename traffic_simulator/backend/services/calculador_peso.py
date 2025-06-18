@@ -30,10 +30,11 @@ class CalculadorPeso(CalculadorPesoInterface):
         if arista is None:
             return peso_base
 
-        # Lógica de cálculo dinámico
-        hora_index = int(self.hora_actual) % 24
-        factor_temporal = self.factores_horarios[hora_index] * self.factores_semanales.get(self.dia_semana, 1.0)
+        # Si está bloqueada, el peso debe ser infinito
+        if getattr(arista, 'bloqueada', False):
+            return float('inf')
 
+        # Factor de congestión
         vehiculos = getattr(arista, 'vehiculos_actuales', 0)
         capacidad = getattr(arista, 'capacidad', 10)
         ratio = vehiculos / capacidad if capacidad > 0 else 1.0
@@ -45,11 +46,12 @@ class CalculadorPeso(CalculadorPesoInterface):
         else:
             factor_congestion = 1.5 + (ratio - 0.8) * 3.0
 
+        # Penalizaciones
         penalizacion = 0
         if getattr(arista, 'accidentes', 0): penalizacion += arista.accidentes * 15
         if getattr(arista, 'construcciones', 0): penalizacion += arista.construcciones * 8
         if getattr(arista, 'operativos', 0): penalizacion += arista.operativos * 5
         if getattr(arista, 'clima_adverso', False): penalizacion += 10
-        if getattr(arista, 'bloqueada', False): return 999999
 
-        return max(1, int(peso_base * factor_temporal * factor_congestion + penalizacion))
+        return max(1, int(peso_base * factor_congestion + penalizacion))
+

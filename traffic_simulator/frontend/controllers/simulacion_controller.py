@@ -26,6 +26,7 @@ class SimulacionController(Observer):
         self._view = None  # Se establecerá desde la vista
         self.nodo_origen_dijkstra=None
         self._vehiculo_seleccionado = None
+        self._tipo_obstaculo_actual = "accidentes"
 
     def establecer_vista(self, view):
         """Establece la referencia a la vista"""
@@ -56,6 +57,8 @@ class SimulacionController(Observer):
             return self._manejar_dijkstra(x, y)
         elif self._modo_actual == "INFO":
             return self._manejar_info_vehiculo(x, y)
+        elif self._modo_actual == "OBSTACULO":
+            return self._manejar_obstaculo(x, y)
 
     def agregar_carro(self, destino_id: str) -> None:
         """Agrega un vehículo con ruta a un destino específico"""
@@ -69,6 +72,7 @@ class SimulacionController(Observer):
 
         if ruta:
             vehiculo = VehiculoFactory.crear_vehiculo('normal', ruta)
+            vehiculo.establecer_contexto_simulacion(self._simulacion)
             self._vehiculos.append(vehiculo)
             self._simulacion.notificar_observadores('vehiculo_agregado', vehiculo)
 
@@ -143,6 +147,7 @@ class SimulacionController(Observer):
             if ruta:
                 tipo_vehiculo = random.choice(['normal', 'emergencia', 'comercial'])
                 vehiculo = VehiculoFactory.crear_vehiculo(tipo_vehiculo, ruta)
+                vehiculo.establecer_contexto_simulacion(self._simulacion)
                 self._vehiculos.append(vehiculo)
 
         return True
@@ -198,7 +203,9 @@ class SimulacionController(Observer):
             f"Tipo: {vehiculo.tipo}",
             f"Origen: {vehiculo.ruta[0].nombre if vehiculo.ruta else 'N/A'}",
             f"Destino: {vehiculo.ruta[-1].nombre if vehiculo.ruta else 'N/A'}",
+            f"Velocidad actual: {vehiculo.velocidad:.2f}",
             f"Ruta: {ruta_str}"
+
         ]
 
         for i, linea in enumerate(lineas):
@@ -260,6 +267,62 @@ class SimulacionController(Observer):
         else:
             print("[Advertencia] No se encontró ruta entre los nodos.")
 
+    def seleccionar_tipo_obstaculo(self, tipo):
+        self._tipo_obstaculo_actual = tipo
+        print(f"[Modo Obstáculo] Tipo de obstáculo seleccionado: {tipo}")
+
+    def _manejar_obstaculo(self, x, y):
+        """Detecta clic directamente sobre una arista y aplica el obstáculo seleccionado"""
+        nodos = self._simulacion.obtener_todos_los_nodos()
+
+        for nodo in nodos:
+            vecinos = self._simulacion._grafo.obtener_vecinos(nodo.identificador)
+
+            for vecino, _ in vecinos:
+                if nodo.identificador >= vecino.identificador:
+                    continue  # evitar doble evaluación
+
+                x1, y1 = nodo.x, nodo.y
+                x2, y2 = vecino.x, vecino.y
+
+                if self._distancia_punto_a_segmento(x, y, x1, y1, x2, y2) < 10:
+                    arista = self._simulacion._grafo.obtener_arista(nodo.identificador, vecino.identificador)
+                    if not arista:
+                        return False
+
+                    from traffic_simulator.backend.services.calculador_peso import CalculadorPeso
+                    calculador = CalculadorPeso()
+                    peso_base = calculador.calcular_peso_base(nodo, vecino)
+                    peso_antes = calculador.calcular_peso_dinamico(nodo, vecino, arista)
+
+                    self._simulacion.establecer_evento_en_ruta(
+                        nodo.identificador,
+                        vecino.identificador,
+                        self._tipo_obstaculo_actual,
+                        1
+                    )
+
+                    peso_despues = calculador.calcular_peso_dinamico(nodo, vecino, arista)
+
+                    print(f"[Obstáculo] '{self._tipo_obstaculo_actual}' aplicado entre {nodo.nombre} ↔ {vecino.nombre}")
+                    print(f"  Peso base     : {peso_base}")
+                    print(f"  Peso antes    : {peso_antes}")
+                    print(f"  Peso después  : {peso_despues}")
+                    return True
+
+        print("[Obstáculo] No se detectó ninguna arista cercana al clic.")
+        return False
+
+    def _distancia_punto_a_segmento(self, px, py, x1, y1, x2, y2):
+        """Distancia mínima desde (px, py) a segmento (x1,y1)-(x2,y2)"""
+        l2 = (x2 - x1) ** 2 + (y2 - y1) ** 2
+        if l2 == 0:
+            return ((px - x1) ** 2 + (py - y1) ** 2) ** 0.5
+        t = max(0, min(1, ((px - x1) * (x2 - x1) + (py - y1) * (y2 - y1)) / l2))
+        proy_x = x1 + t * (x2 - x1)
+        proy_y = y1 + t * (y2 - y1)
+        return ((px - proy_x) ** 2 + (py - proy_y) ** 2) ** 0.5
+
 
 print("=== REFACTORIZACIÓN COMPLETA ===")
 print("✓ Interfaces implementadas (Principio DIP)")
@@ -271,4 +334,5 @@ print("✓ Patrón MVC para separar responsabilidades")
 print("✓ Principios SOLID aplicados")
 print("✓ Encapsulación mejorada")
 print("✓ Separación clara Frontend/Backend")
+
 

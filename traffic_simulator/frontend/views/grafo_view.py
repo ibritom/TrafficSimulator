@@ -6,6 +6,7 @@ from traffic_simulator.frontend.views.base_view import BaseView
 from traffic_simulator.backend.utils.constantes import *
 from traffic_simulator.backend.models.nodo import Nodo
 from traffic_simulator.backend.models.vehiculo import Vehiculo
+from traffic_simulator.backend.services.calculador_peso import CalculadorPeso
 
 
 class GrafoView(BaseView):
@@ -117,9 +118,9 @@ class GrafoView(BaseView):
     def _renderizar_conexiones(self, pantalla: pygame.Surface, nodos: List[Nodo]) -> None:
         """Renderiza todas las conexiones entre nodos"""
         for nodo in nodos:
-            for vecino, peso in self._controller._simulacion._grafo.obtener_vecinos(nodo.identificador):
-                if nodo.identificador < vecino.identificador:  # Evitar duplicados
-                    self.dibujar_conexion(pantalla, nodo, vecino, peso)
+            for vecino, arista in self._controller._simulacion._grafo.obtener_vecinos(nodo.identificador):
+                if nodo.identificador < vecino.identificador:
+                    self.dibujar_conexion(pantalla, nodo, vecino, arista)
 
     def _renderizar_rutas(self, pantalla: pygame.Surface) -> None:
         """Renderiza las rutas activas"""
@@ -156,21 +157,34 @@ class GrafoView(BaseView):
             rect_dist = texto_dist.get_rect(center=(nodo.x + 25, nodo.y - 25))
             pantalla.blit(texto_dist, rect_dist)
 
-    def dibujar_conexion(self, pantalla: pygame.Surface, origen: Nodo, destino: Nodo, peso: int) -> None:
-        """Dibuja una conexión entre nodos con su peso"""
-        pygame.draw.line(pantalla, GRIS,
+    def dibujar_conexion(self, pantalla: pygame.Surface, origen: Nodo, destino: Nodo, arista):
+
+
+        """Dibuja una conexión entre nodos con color según congestión/obstáculos"""
+        # Obtener la arista real entre los nodos
+        arista = self._controller._simulacion._grafo.obtener_arista(origen.identificador, destino.identificador)
+
+        if arista:
+            calculador = CalculadorPeso()
+            peso_base = calculador.calcular_peso_base(origen, destino)
+            peso_actual = calculador.calcular_peso_dinamico(origen, destino, arista)
+            color = self._obtener_color_congestion(peso_base, peso_actual)
+        else:
+            color = GRIS  # En caso de que no se encuentre la arista
+
+        pygame.draw.line(pantalla, color,
                          (origen.x, origen.y),
                          (destino.x, destino.y),
                          self._config_visual['grosor_conexion'])
 
         # Texto del peso
-        texto_peso = self._fuente_pequena.render(str(peso), True, NEGRO)
+        texto_peso = self._fuente_pequena.render(str(arista.peso), True, NEGRO)
+
         rect_peso = texto_peso.get_rect(center=(
             (origen.x + destino.x) / 2,
             (origen.y + destino.y) / 2
         ))
 
-        # Fondo para mejor legibilidad
         pygame.draw.rect(pantalla, BLANCO, rect_peso.inflate(8, 4))
         pantalla.blit(texto_peso, rect_peso)
 
@@ -187,3 +201,21 @@ class GrafoView(BaseView):
         if vehiculo.activo:
             pygame.draw.circle(pantalla, vehiculo.color,
                                (int(vehiculo.posicion[0]), int(vehiculo.posicion[1])), 10)
+
+    def _obtener_color_congestion(self, peso_base: float, peso_actual: float) -> Tuple[int, int, int]:
+        """Determina color según el nivel de congestión"""
+        if peso_actual >= 999999:
+            return (50, 50, 50)  # bloqueada = gris oscuro
+
+        ratio = peso_actual / peso_base if peso_base > 0 else 1
+
+        if ratio <= 1.2:
+            return (0, 200, 0)  # verde
+        elif ratio <= 1.5:
+            return (255, 255, 0)  # amarillo
+        elif ratio <= 2.0:
+            return (255, 165, 0)  # naranja
+        elif ratio <= 3.0:
+            return (255, 80, 0)  # rojo
+        else:
+            return (150, 0, 0)  # rojo oscuro

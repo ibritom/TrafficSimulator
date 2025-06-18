@@ -55,20 +55,20 @@ class TrafficSimulatorApp:
         """Configura algunos nodos y conexiones de ejemplo"""
         # Nodos de ejemplo
         ciudades = [
-            ("San José", 400, 300),
-            ("Cartago", 600, 400),
-            ("Heredia", 300, 200),
-            ("Alajuela", 200, 250),
-            ("Puntarenas", 150, 450),
-            ("Guanacaste", 800,500),
-            ("Puerto Viejo",1200,500),
-            ("Pavas",1200,50),
+            ("Atenas", 400, 300),
+            ("Tibás", 600, 400),
+            ("Quepos", 300, 200),
+            ("Liberia", 200, 250),
+            ("Upala", 150, 450),
+            ("Tres Ríos", 800,500),
+            ("Paraíso",1200,500),
+            ("Prusia",1200,50),
             ("San Pedro",700,200),
-            ("Curridabat",950,300),
-            ("Upala",452, 98),
-            ("Tres Ríos",351, 495),
-            ("Tibás",1252, 276),
-            ("Prusia",811, 52)
+            ("Guadalupe",950,300),
+            ("San Rafael",452, 98),
+            ("Pavas",351, 495),
+            ("Puerto Viejo",1252, 276),
+            ("San Isidro",811, 52)
 
 
         ]
@@ -78,21 +78,21 @@ class TrafficSimulatorApp:
 
         # Conexiones de ejemplo
         conexiones = [
-            ("San José", "Cartago"),
-            ("San José", "Heredia"),
-            ("San José", "Alajuela"),
-            ("Alajuela", "Puntarenas"),
-            ("Heredia", "Alajuela"),
-            ("Cartago", "Curridabat"),
-            ("Curridabat", "San Pedro"),
-            ("San Pedro", "Guanacaste"),
-            ("Guanacaste", "Puerto Viejo"),
-            ("Puerto Viejo", "Pavas"),
-            ("Pavas", "Tibás"),
-            ("Tibás", "Upala"),
-            ("Upala", "Prusia"),
-            ("Prusia", "Tres Ríos"),
-            ("Tres Ríos", "Cartago")
+            ("Atenas", "Tibás"),
+            ("Atenas", "Quepos"),
+            ("Atenas", "Liberia"),
+            ("Liberia", "Upala"),
+            ("Quepos", "Liberia"),
+            ("Tibás", "Guadalupe"),
+            ("Guadalupe", "San Pedro"),
+            ("San Pedro", "Tres Ríos"),
+            ("Tres Ríos", "Paraíso"),
+            ("Paraíso", "Prusia"),
+            ("Prusia", "Puerto Viejo"),
+            ("Puerto Viejo", "San Rafael"),
+            ("San Rafael", "San Isidro"),
+            ("San Isidro", "Pavas"),
+            ("Pavas", "Tibás")
         ]
 
         for origen, destino in conexiones:
@@ -123,6 +123,8 @@ class TrafficSimulatorApp:
         print("1: Modo Agregar Nodos")
         print("2: Modo Conectar Nodos")
         print("3: Modo Dijkstra")
+        print("4: Modo Obstáculo (click arista)")
+        print("5-9: Seleccionar tipo de obstáculo")
         print("R: Mostrar/Ocultar Rutas")
         print("S: Generar Vehículos Aleatorios")
         print("C: Limpiar Simulación")
@@ -171,9 +173,17 @@ class TrafficSimulatorApp:
             K_3: lambda: self._controller.cambiar_modo("DIJKSTRA"),
             K_r: self._controller.alternar_visualizacion_rutas,
             K_c: self._controller.reiniciar_simulacion,
-            K_s: lambda: self._controller.generar_vehiculos_aleatorios(5),
+            K_s: lambda: self._controller.generar_vehiculos_aleatorios(10),
             K_p: self._iniciar_simulacion_automatica,
             K_i: lambda: self._controller.cambiar_modo("INFO"),
+
+
+            K_4: lambda: self._controller.cambiar_modo("OBSTACULO"),
+            K_5: lambda: self._controller.seleccionar_tipo_obstaculo("accidentes"),
+            K_6: lambda: self._controller.seleccionar_tipo_obstaculo("construcciones"),
+            K_7: lambda: self._controller.seleccionar_tipo_obstaculo("operativos"),
+            K_8: lambda: self._controller.seleccionar_tipo_obstaculo("clima_adverso"),
+            K_9: lambda: self._controller.seleccionar_tipo_obstaculo("bloqueada"),
 
             K_PLUS: lambda: self._cambiar_velocidad(0.5),
             K_MINUS: lambda: self._cambiar_velocidad(-0.5),
@@ -203,8 +213,8 @@ class TrafficSimulatorApp:
         if self._simulacion_activa:
             tiempo_actual = pygame.time.get_ticks()
             if tiempo_actual - self._tiempo_ultimo_auto >= self._intervalo_generacion:
-                print("[Simulación] Generando 10 vehículos automáticamente")
-                self._controller.generar_vehiculos_aleatorios(20)
+
+                self._controller.generar_vehiculos_aleatorios(4)
                 self._tiempo_ultimo_auto = tiempo_actual
 
     def _renderizar(self):

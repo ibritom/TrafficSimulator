@@ -60,31 +60,41 @@ class SimulacionFacade(Observable):
         return False
 
     def actualizar_pesos_dinamicos(self):
-        """Actualiza los pesos dinámicos de todas las aristas según el cálculo actual"""
+        """Actualiza los pesos dinámicos de todas las aristas, evitando aristas bloqueadas"""
         for nodo in self._grafo.obtener_todos_los_nodos():
             origen_id = nodo.identificador
-            vecinos = self._grafo.obtener_vecinos(origen_id)
+            lista_aristas = self._grafo._adyacencias.obtener(origen_id)
 
-            for vecino, _ in vecinos:
-                destino_id = vecino.identificador
+            actual = lista_aristas.cabeza
+            while actual:
+                arista = actual.datos
+                if arista is None:
+                    actual = actual.siguiente
+                    continue
 
-                arista = self._grafo.obtener_arista(origen_id, destino_id)
-                if arista:
-                    # Inicializar propiedades si no existen
-                    if not hasattr(arista, 'vehiculos_actuales'):
-                        arista.vehiculos_actuales = 0
-                        arista.capacidad = 10
-                        arista.accidentes = 0
-                        arista.construcciones = 0
-                        arista.operativos = 0
-                        arista.clima_adverso = False
-                        arista.bloqueada = not arista.activa  # Se usa si la arista está inactiva
+                # Inicializar atributos si no existen
+                if not hasattr(arista, 'vehiculos_actuales'):
+                    arista.vehiculos_actuales = 0
+                    arista.capacidad = 10
+                    arista.accidentes = 0
+                    arista.construcciones = 0
+                    arista.operativos = 0
+                    arista.clima_adverso = False
+                    arista.bloqueada = not arista.activa
 
-                    nuevo_peso = self._calculador_peso.calcular_peso_dinamico(
-                        arista.origen, arista.destino, arista
-                    )
+                # Calcular nuevo peso
+                nuevo_peso = self._calculador_peso.calcular_peso_dinamico(
+                    arista.origen, arista.destino, arista
+                )
 
-                    arista._peso = nuevo_peso
+                # Si está bloqueada o peso inválido → forzar infinito
+                if nuevo_peso is None or not arista.activa or arista.bloqueada:
+                    nuevo_peso = float('inf')
+
+                # Establecer el nuevo peso dinámico
+                arista.establecer_peso_dinamico(nuevo_peso)
+
+                actual = actual.siguiente
 
     def calcular_rutas_optimas(self, origen_id):
         """Calcula todas las rutas óptimas desde un nodo origen"""
@@ -93,6 +103,7 @@ class SimulacionFacade(Observable):
         self.notificar_observadores('rutas_calculadas', origen_id)
 
     def obtener_ruta_entre_nodos(self, origen_id, destino_id):
+        self.actualizar_pesos_dinamicos()  # ← CLAVE: actualiza pesos antes del cálculo
         """Obtiene la ruta óptima entre dos nodos específicos"""
         return self._algoritmo_ruta.calcular_ruta_optima(self._grafo, origen_id, destino_id)
 
@@ -148,3 +159,48 @@ class SimulacionFacade(Observable):
 
         self.notificar_observadores('simulacion_reiniciada', None)
 
+    def establecer_evento_en_ruta(self, origen_id, destino_id, tipo_evento, cantidad=1):
+        """
+        Aplica un evento a una arista entre dos nodos.
+        Soporta: 'accidentes', 'construcciones', 'operativos', 'clima_adverso', 'bloqueada'
+        """
+        arista = self._grafo.obtener_arista(origen_id, destino_id)
+        arista_inversa = self._grafo.obtener_arista(destino_id, origen_id)
+
+        if not arista or not arista_inversa:
+            return False
+
+        # Asignar valores según el tipo de evento
+        if tipo_evento == 'accidentes':
+            arista.accidentes = cantidad
+            arista_inversa.accidentes = cantidad
+        elif tipo_evento == 'construcciones':
+            arista.construcciones = cantidad
+            arista_inversa.construcciones = cantidad
+        elif tipo_evento == 'operativos':
+            arista.operativos = cantidad
+            arista_inversa.operativos = cantidad
+        elif tipo_evento == 'clima_adverso':
+            arista.clima_adverso = bool(cantidad)
+            arista_inversa.clima_adverso = bool(cantidad)
+        elif tipo_evento == 'bloqueada':
+            arista.bloqueada = bool(cantidad)
+            arista_inversa.bloqueada = bool(cantidad)
+            if cantidad:
+                arista.bloquear()
+                arista_inversa.bloquear()
+            else:
+                arista.desbloquear()
+                arista_inversa.desbloquear()
+        else:
+            return False
+
+        # Notificar si lo deseas
+        self.notificar_observadores("evento_aplicado", {
+            "origen": origen_id,
+            "destino": destino_id,
+            "evento": tipo_evento,
+            "cantidad": cantidad
+        })
+
+        return True

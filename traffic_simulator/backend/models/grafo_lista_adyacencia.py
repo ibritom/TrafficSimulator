@@ -51,18 +51,17 @@ class GrafoListaAdyacencia(GrafoInterface):
             return None
 
     def obtener_vecinos(self, nodo_id):
-        """Obtiene los vecinos de un nodo"""
         if not self._adyacencias.contiene(nodo_id):
             return []
 
         lista_aristas = self._adyacencias.obtener(nodo_id)
         vecinos = []
 
-        # Recorrer lista enlazada personalizada
         actual = lista_aristas.cabeza
         while actual:
-            if actual.datos.activa:  # Solo vecinos con aristas activas
-                vecinos.append((actual.datos.destino, actual.datos.peso))
+            arista = actual.datos
+            if arista and arista.activa and not arista.bloqueada and arista.peso != float('inf'):
+                vecinos.append((arista.destino, arista))
             actual = actual.siguiente
 
         return vecinos
