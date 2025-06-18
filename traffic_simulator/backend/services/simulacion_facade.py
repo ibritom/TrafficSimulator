@@ -144,13 +144,6 @@ class SimulacionFacade(Observable):
         """Obtiene todos los nodos del grafo"""
         return self._grafo.obtener_todos_los_nodos()
 
-    def obtener_nodo_por_posicion(self, x, y, radio_deteccion=25):
-        """Encuentra el nodo más cercano a una posición"""
-        for nodo in self._grafo.obtener_todos_los_nodos():
-            distancia = math.sqrt((nodo.x - x) ** 2 + (nodo.y - y) ** 2)
-            if distancia <= radio_deteccion:
-                return nodo
-        return None
 
     def reiniciar_simulacion(self):
         """Reinicia la simulación completa"""

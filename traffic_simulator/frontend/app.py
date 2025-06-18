@@ -25,7 +25,7 @@ class TrafficSimulatorApp:
         self._velocidad_simulacion = 1.0
         self._pausado = False
         self._tiempo_ultimo_auto = 0  # tiempo del último vehículo generado
-        self._intervalo_generacion = 500 # 2000 ms = 2 segundos
+        self._intervalo_generacion = 1000 #500 # 2000 ms = 2 segundos
         self._simulacion_activa = False  # ← la simulación no arranca automáticamente
 
     def _inicializar_pygame(self):
@@ -185,8 +185,8 @@ class TrafficSimulatorApp:
             K_8: lambda: self._controller.seleccionar_tipo_obstaculo("clima_adverso"),
             K_9: lambda: self._controller.seleccionar_tipo_obstaculo("bloqueada"),
 
-            K_PLUS: lambda: self._cambiar_velocidad(0.5),
-            K_MINUS: lambda: self._cambiar_velocidad(-0.5),
+            K_a: lambda: self._cambiar_velocidad(0.5),
+            K_d: lambda: self._cambiar_velocidad(-0.5),
             K_SPACE: self._alternar_pausa,
             K_ESCAPE: lambda: setattr(self, '_ejecutando', False)
         }
