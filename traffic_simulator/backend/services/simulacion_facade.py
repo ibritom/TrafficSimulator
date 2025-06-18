@@ -5,7 +5,7 @@ from traffic_simulator.backend.models.nodo import Nodo
 from traffic_simulator.backend.services.dijkstra_strategy import DijkstraStrategy
 from traffic_simulator.backend.services.calculador_peso import CalculadorPeso
 from traffic_simulator.backend.interfaces.calculador_peso_interface import CalculadorPesoInterface
-
+from traffic_simulator.backend.services.analizador_critico import AnalizadorCritico
 import math
 
 
@@ -204,3 +204,37 @@ class SimulacionFacade(Observable):
         })
 
         return True
+
+    def obtener_puntos_criticos(self, top=5):
+        analizador = AnalizadorCritico(self._grafo, self._algoritmo_ruta)
+        centralidad = analizador.calcular_centralidad_intermediacion()
+        return centralidad[:top]
+
+    def obtener_aristas_criticas_con_peso(self, top=20):
+        from traffic_simulator.backend.services.calculador_peso import CalculadorPeso
+
+        analizador = AnalizadorCritico(self._grafo, self._algoritmo_ruta)
+        aristas_usadas = analizador.calcular_aristas_mas_usadas()
+        calculador = CalculadorPeso()
+
+        resultado = []
+        for (id1, id2), _ in aristas_usadas:
+            arista = self._grafo.obtener_arista(id1, id2)
+            if arista:
+                nodo1 = self._grafo.obtener_nodo(id1)
+                nodo2 = self._grafo.obtener_nodo(id2)
+
+                peso_base = calculador.calcular_peso_base(nodo1, nodo2)
+                peso_dinamico = calculador.calcular_peso_dinamico(nodo1, nodo2, arista)
+
+                ratio = peso_dinamico / peso_base if peso_base > 0 else 1
+
+                # Solo mostrar si la arista está en estado amarillo o peor (ratio > 1.2)
+                if ratio > 1.2:
+                    resultado.append((nodo1.nombre, nodo2.nombre, int(peso_dinamico)))
+
+            if len(resultado) >= top:
+                break
+
+        return resultado
+

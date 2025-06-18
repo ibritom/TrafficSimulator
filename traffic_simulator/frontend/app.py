@@ -45,7 +45,7 @@ class TrafficSimulatorApp:
         # ✅ ESTA LÍNEA ES CLAVE:
         self._controller.establecer_vista(self._main_view)
 
-        self._configurar_ejemplo_inicial()
+
 
 
         # Configuración inicial de ejemplo
@@ -173,10 +173,10 @@ class TrafficSimulatorApp:
             K_3: lambda: self._controller.cambiar_modo("DIJKSTRA"),
             K_r: self._controller.alternar_visualizacion_rutas,
             K_c: self._controller.reiniciar_simulacion,
-            K_s: lambda: self._controller.generar_vehiculos_aleatorios(10),
+            K_s: lambda: self._controller.generar_vehiculos_aleatorios(20),
             K_p: self._iniciar_simulacion_automatica,
             K_i: lambda: self._controller.cambiar_modo("INFO"),
-
+            K_t: self._main_view.alternar_mostrar_recomendaciones,
 
             K_4: lambda: self._controller.cambiar_modo("OBSTACULO"),
             K_5: lambda: self._controller.seleccionar_tipo_obstaculo("accidentes"),

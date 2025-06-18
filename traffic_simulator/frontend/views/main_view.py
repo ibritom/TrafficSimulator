@@ -17,6 +17,8 @@ class MainView(BaseView):
         self._panel_control_view = PanelControlView(controller)
         self._info_estado_view = InfoEstadoView(controller)
         self._popup = None
+        self._mostrar_recomendaciones = False
+        self._puntos_criticos_guardados = []  # ← se llena al presionar T
 
     def actualizar_desde_modelo(self, evento, datos):
         """Propaga las actualizaciones a las vistas hijas"""
@@ -29,20 +31,26 @@ class MainView(BaseView):
         # Fondo blanco
         pantalla.fill(BLANCO)
         # Renderizar popup si está activo
-        vehiculo = self._controller.obtener_vehiculo_seleccionado()
-        if vehiculo:
-            self._mostrar_info_vehiculo(pantalla, vehiculo)
-
-        # Orden de renderizado importante
         self._grafo_view.renderizar(pantalla)
         self._panel_control_view.renderizar(pantalla)
         self._info_estado_view.renderizar(pantalla)
+
+        vehiculo = self._controller.obtener_vehiculo_seleccionado()
+        if vehiculo:
+            self._mostrar_info_vehiculo(pantalla, vehiculo)
+        if self._mostrar_recomendaciones:
+            self._mostrar_recomendaciones_criticas(pantalla)
+
+        # Orden de renderizado importante
+
         if self.popup_activo():
 
             self._popup.dibujar()
         vehiculo = self._controller.obtener_vehiculo_seleccionado()
         if vehiculo:
             self._mostrar_info_vehiculo(pantalla, vehiculo)
+
+
     def mostrar_popup_nombre_ciudad(self, x, y):
         print(f"[Popup] Creando popup en ({x}, {y})")
         self._popup = NombreCiudadPopup(self._pantalla, self._controller, x, y)
@@ -106,3 +114,29 @@ class MainView(BaseView):
         if linea_actual:
             texto = fuente.render(linea_actual, True, NEGRO)
             pantalla.blit(texto, (x + 10, ruta_render_y))
+
+    def alternar_mostrar_recomendaciones(self):
+        self._mostrar_recomendaciones = not self._mostrar_recomendaciones
+        if self._mostrar_recomendaciones:
+            self._puntos_criticos_guardados = self._controller.obtener_aristas_criticas()
+
+    def _mostrar_recomendaciones_criticas(self, pantalla):
+        fuente = pygame.font.Font(None, 16)
+        x, y, ancho, alto = 390, 590, 250, 170
+        fondo = pygame.Rect(x, y, ancho, alto)
+
+        pygame.draw.rect(pantalla, (240, 240, 240), fondo)
+        pygame.draw.rect(pantalla, NEGRO, fondo, 2)
+
+        aristas = self._puntos_criticos_guardados
+
+        if not aristas:
+            lineas = ["No hay rutas críticas."]
+        else:
+            lineas = ["⚠ Rutas congestionadas:"]
+            for nombre1, nombre2, peso in aristas:
+                lineas.append(f"{nombre1} ↔ {nombre2}: peso = {int(peso)}")
+
+        for i, linea in enumerate(lineas):
+            texto = fuente.render(linea, True, NEGRO)
+            pantalla.blit(texto, (x + 10, y + 10 + i * 20))

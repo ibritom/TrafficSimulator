@@ -323,6 +323,19 @@ class SimulacionController(Observer):
         proy_y = y1 + t * (y2 - y1)
         return ((px - proy_x) ** 2 + (py - proy_y) ** 2) ** 0.5
 
+    # En simulacion_controller.py
+    def mostrar_puntos_criticos(self):
+        puntos = self._simulacion.obtener_puntos_criticos()
+        print("\n[Puntos Críticos - Recomendación de planificación]")
+        for nombre, score in puntos:
+            print(f"• {nombre}: involucrado en {score} rutas óptimas")
+
+    def obtener_puntos_criticos(self):
+        return self._simulacion.obtener_puntos_criticos(top=6)
+
+    def obtener_aristas_criticas(self):
+        return self._simulacion.obtener_aristas_criticas_con_peso()
+
 
 print("=== REFACTORIZACIÓN COMPLETA ===")
 print("✓ Interfaces implementadas (Principio DIP)")
