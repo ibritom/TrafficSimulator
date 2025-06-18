@@ -193,7 +193,11 @@ class GrafoView(BaseView):
     def dibujar_vehiculo(self, pantalla: pygame.Surface, vehiculo: Vehiculo) -> None:
         """Dibuja un vehículo en su posición actual"""
         if vehiculo.activo:
-            pygame.draw.circle(pantalla, vehiculo.color,
+            # Verificar si es el vehículo seleccionado
+            vehiculo_seleccionado = self._controller.obtener_vehiculo_seleccionado()
+            color = (0, 0, 0) if vehiculo == vehiculo_seleccionado else vehiculo.color
+
+            pygame.draw.circle(pantalla, color,
                                (int(vehiculo.posicion[0]), int(vehiculo.posicion[1])), 10)
 
     def _obtener_color_congestion(self, peso_base: float, peso_actual: float) -> Tuple[int, int, int]:
