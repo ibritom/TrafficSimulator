@@ -30,15 +30,9 @@ class PanelControlView(BaseView):
         super().__init__(controller)
         self._fuente = pygame.font.Font(None, 24)
         self._fuente_pequena = pygame.font.Font(None, 18)
-        self.boton_Nodo = boton((255,255,255),(30,30,30),(0,0,0),10,590,170,170,"Ciudad")
-        self.boton_Vertice = boton((255,255,255),(30,30,30),(0,0,0),200,650,50,170,"Calle")
-        self.boton_Peso = boton((255,255,255),(30,30,30),(0,0,0),200,590,50,170,"Tráfico")
-        self.boton_Play = botonImg(650,590,170,170,playImg)
-        self.boton_Pause = botonImg(820,590,170,170,pauseImg)
-        self.boton_Acelerar = boton((255,255,255),(30,30,30),(0,0,0),1000,590,50,170,"Acelerar sim")
-        self.boton_Decelerar = boton((255,255,255),(30,30,30),(0,0,0),1000,650,50,170,"Decelerar sim")
+
         self.uiRect = Rect(0, 576, ANCHO, (ALTO/4))
-        self.atributosRect = (390, 590, 250, 170)
+        self.atributosRect = (10, 590, 250, 170)
 
     def actualizar_desde_modelo(self, evento, datos):
         """Actualiza la vista basada en eventos del modelo"""
@@ -77,15 +71,44 @@ class PanelControlView(BaseView):
         pantalla.blit(inst_texto, (10, panel_y))
         panel_y += 25
 
+
+
         # Controles
         controles = [
-            "1: Agregar Nodos", "2: Conectar Nodos", "3: Dijkstra",
-            "R: Mostrar/Ocultar Rutas", "C: Limpiar", "ESC: Salir"
+        "1: Agregar Nodos",
+        "2: Conectar Nodos",
+        "3: Calcular Ruta (Dijkstra)",
+        "R: Mostrar/Ocultar Rutas",
+        "C: Reiniciar Simulación",
+        "S: Generar Vehículos Aleatorios",
+        "P: Iniciar Simulación Automática",
+        "I: Modo Información Vehículos",
+        "T: Mostrar/Ocultar Recomendaciones",
+        "4: Modo Obstáculo",
+        "5-9: Accidente, Construcción, Operativo, Lluvia, Bloqueada",
+        "A/D: Aumentar / Disminuir Velocidad",
+        "ESPACIO: Pausar / Reanudar",
+        "ESC: Salir"
         ]
+        # Fondo del panel y área de atributos
+        pygame.draw.rect(pantalla, (0, 0, 0), self.uiRect)
+        pygame.draw.rect(pantalla, (255, 255, 255), self.atributosRect)
+
+        # Mostrar controles en columnas verticales
+        columnas = 3
+        items_por_columna = len(controles) // columnas + 1
+        x_base = 280
+        y_base = 600
+        espacio_x = 230
+        espacio_y = 22
 
         for i, control in enumerate(controles):
-            control_texto = self._fuente_pequena.render(control, True, GRIS)
-            pantalla.blit(control_texto, (10, panel_y + i * 20))
+            columna = i // items_por_columna
+            fila = i % items_por_columna
+            x = x_base + columna * espacio_x
+            y = y_base + fila * espacio_y
+            control_render = self._fuente_pequena.render(control, True, BLANCO)
+            pantalla.blit(control_render, (x, y))
 
         # Información del algoritmo Dijkstra
         if nodo_origen_dijkstra:
@@ -113,24 +136,3 @@ class PanelControlView(BaseView):
                             True, NEGRO)
                         pantalla.blit(ruta_texto, (10, panel_y))
                         panel_y += 18
-        # Botones
-        pygame.draw.rect(pantalla, (0, 0, 0), self.uiRect)
-        pygame.draw.rect(pantalla, (255, 255, 255), self.atributosRect)
-        if self.boton_Nodo.renderizar(pantalla):
-            mouse_x,mouse_y = pygame.mouse.get_pos()
-            self._controller.cambiar_modo("AGREGAR_NODO")
-            print("Agregar ciudad")
-        if self.boton_Vertice.renderizar(pantalla):
-            self._controller.cambiar_modo("CONECTAR_NODOS")
-        if self.boton_Peso.renderizar(pantalla):
-            print("Pesos")
-        if self.boton_Play.renderizar(pantalla):
-            print("Play")
-        if self.boton_Pause.renderizar(pantalla):
-            print("Pause")
-        if self.boton_Acelerar.renderizar(pantalla):
-            print("Acelerar")
-        if self.boton_Decelerar.renderizar(pantalla):
-            print("Decelerar")
-
-

@@ -34,15 +34,3 @@ class InfoEstadoView(BaseView):
         velocidad_texto = self._fuente_pequena.render(
             f"Velocidad: {self._controller._velocidad_simulacion}x", True, GRIS)
         pantalla.blit(velocidad_texto, (10, info_y + 40))
-
-        # Controles adicionales
-        controles_adicionales = [
-            "S: Generar vehículos aleatorios",
-            "SPACE: Pausar/Reanudar",
-            "a/d: Cambiar velocidad",
-            "Click Der: Agregar vehículo a destino"
-        ]
-
-        for i, control in enumerate(controles_adicionales):
-            control_texto = self._fuente_pequena.render(control, True, GRIS)
-            pantalla.blit(control_texto, (ANCHO - 300, info_y + i * 18))

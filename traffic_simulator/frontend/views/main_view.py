@@ -71,7 +71,7 @@ class MainView(BaseView):
 
     def _mostrar_info_vehiculo(self, pantalla, vehiculo):
         fuente = pygame.font.Font(None, 22)
-        x, y, ancho, alto = 390, 590, 250, 170
+        x, y, ancho, alto = 10, 590, 250, 170
         fondo = pygame.Rect(x, y, ancho, alto)
 
         # Fondo y borde
@@ -122,7 +122,7 @@ class MainView(BaseView):
 
     def _mostrar_recomendaciones_criticas(self, pantalla):
         fuente = pygame.font.Font(None, 16)
-        x, y, ancho, alto = 390, 590, 250, 170
+        x, y, ancho, alto = 1100, 590, 250, 170
         fondo = pygame.Rect(x, y, ancho, alto)
 
         pygame.draw.rect(pantalla, (240, 240, 240), fondo)
