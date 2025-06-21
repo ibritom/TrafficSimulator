@@ -1,7 +1,8 @@
 import os
 from pathlib import Path
+import pygame
+from pygame import Rect
 from traffic_simulator.frontend.views.base_view import BaseView
-from traffic_simulator.frontend.views.boton import *
 from traffic_simulator.frontend.controllers.simulacion_controller import *
 
 
@@ -61,7 +62,6 @@ class PanelControlView(BaseView):
         "1: Agregar Nodos",
         "2: Conectar Nodos",
         "3: Calcular Ruta (Dijkstra)",
-        "R: Mostrar/Ocultar Rutas",
         "C: Reiniciar Simulación",
         "S: Generar Vehículos Aleatorios",
         "P: Iniciar Simulación Automática",

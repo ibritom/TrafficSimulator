@@ -29,8 +29,3 @@ class InfoEstadoView(BaseView):
         vehiculos_texto = self._fuente_pequena.render(
             f"Vehículos: {len(estado['vehiculos'])}", True, GRIS)
         pantalla.blit(vehiculos_texto, (10, info_y + 20))
-
-        # Velocidad de simulación
-        velocidad_texto = self._fuente_pequena.render(
-            f"Velocidad: {self._controller._velocidad_simulacion}x", True, GRIS)
-        pantalla.blit(velocidad_texto, (10, info_y + 40))
