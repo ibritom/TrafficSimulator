@@ -135,7 +135,7 @@ class MainView(BaseView):
         else:
             lineas = ["Rutas congestionadas:"]
             for nombre1, nombre2, peso in aristas:
-                lineas.append(f"{nombre1} ↔ {nombre2}: peso = {int(peso)}")
+                lineas.append(f"{nombre1} - {nombre2}: peso = {int(peso)}")
 
         for i, linea in enumerate(lineas):
             texto = fuente.render(linea, True, NEGRO)
